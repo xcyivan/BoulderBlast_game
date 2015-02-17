@@ -2,7 +2,14 @@
 #define ACTOR_H_
 
 #include "GraphObject.h"
+#include <iostream>
 
-// Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
+class Actor : public GraphObject{
+public:
+    void doSomething(){std::cout<<"Hi I'm doing something!"<<std::endl;}
+};
+
+
+
 
 #endif // ACTOR_H_
