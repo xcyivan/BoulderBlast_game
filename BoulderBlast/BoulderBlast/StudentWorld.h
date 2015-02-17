@@ -6,6 +6,9 @@
 #include <string>
 #include <iostream>
 #include "Level.h"
+#include "Actor.h"
+#include <vector>
+using namespace std;
 
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
@@ -25,6 +28,8 @@ public:
     int loadLevel();
 
 private:
+    Player* pp;
+    vector<Actor*> av;
 };
 
 #endif // STUDENTWORLD_H_
