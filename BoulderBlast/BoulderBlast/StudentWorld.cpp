@@ -7,9 +7,11 @@ GameWorld* createStudentWorld(string assetDir)
 	return new StudentWorld(assetDir);
 }
 
+
+/////////////init()///////////////////////////
 int StudentWorld:: init(){
     
-///////////load level///////////////
+    ////////load level///////////////
     string curLevel = "level00.dat";
     Level lev(assetDirectory());
     Level::LoadResult result = lev.loadLevel(curLevel);
@@ -25,8 +27,7 @@ int StudentWorld:: init(){
             else if(item==Level::exit) map[14-y][x]='x';
             else if(item==Level::player) {
                 map[14-y][x]='@';
-                pp = new Player(x, y);
-                pp->setVisible(true);
+                pp = new Player(this, x, y);
             }
             else if(item==Level::horiz_snarlbot) map[14-y][x]='h';
             else if(item==Level::vert_snarlbot) map[14-y][x]='v';
@@ -34,8 +35,7 @@ int StudentWorld:: init(){
             else if(item==Level::angry_kleptobot_factory) map[14-y][x]='2';
             else if(item==Level::wall) {
                 map[14-y][x]='#';
-                av.push_back(new Wall(x,y));
-                av.back()->setVisible(true);
+                av.push_back(new Wall(this, x,y));
             }
             else if(item==Level::boulder) map[14-y][x]='b';
             else if(item==Level::hole) map[14-y][x]='o';
@@ -52,13 +52,15 @@ int StudentWorld:: init(){
         }
         cout<<endl;
     }
-////////////end of load level //////////////////////////
+    ////////////end of load level //////////////////////////
     return GWSTATUS_CONTINUE_GAME;
 }
 
 
+
 int StudentWorld:: move(){
-    decLives();
+    //decLives();
+    pp->doSomething();
     return GWSTATUS_CONTINUE_GAME;
 }
 
