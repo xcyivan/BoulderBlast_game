@@ -19,38 +19,31 @@ int StudentWorld:: init(){
         return -1;
     //already loaded successfully
     //copy the map down
-    char map[15][15];
     for(int x=0; x<15; x++){
         for(int y=0; y<15;y++){
             Level:: MazeEntry item = lev.getContentsOf(x, y);
-            if(item==Level:: empty) map[14-y][x]=' ';
-            else if(item==Level::exit) map[14-y][x]='x';
+            if(item==Level:: empty) map[x][y]=' ';
+            else if(item==Level::exit) map[x][y]='x';
             else if(item==Level::player) {
-                map[14-y][x]='@';
+                map[x][y]='@';
                 pp = new Player(this, x, y);
             }
-            else if(item==Level::horiz_snarlbot) map[14-y][x]='h';
-            else if(item==Level::vert_snarlbot) map[14-y][x]='v';
-            else if(item==Level::kleptobot_factory) map[14-y][x]='1';
-            else if(item==Level::angry_kleptobot_factory) map[14-y][x]='2';
+            else if(item==Level::horiz_snarlbot) map[x][y]='h';
+            else if(item==Level::vert_snarlbot) map[x][y]='v';
+            else if(item==Level::kleptobot_factory) map[x][y]='1';
+            else if(item==Level::angry_kleptobot_factory) map[x][y]='2';
             else if(item==Level::wall) {
-                map[14-y][x]='#';
+                map[x][y]='#';
                 av.push_back(new Wall(this, x,y));
             }
-            else if(item==Level::boulder) map[14-y][x]='b';
-            else if(item==Level::hole) map[14-y][x]='o';
-            else if(item==Level::jewel) map[14-y][x]='*';
-            else if(item==Level::restore_health) map[14-y][x]='r';
-            else if(item==Level::extra_life) map[14-y][x]='e';
-            else if(item==Level::ammo) map[14-y][x]='a';
-            else map[14-y][x]='?';
+            else if(item==Level::boulder) map[x][y]='b';
+            else if(item==Level::hole) map[x][y]='o';
+            else if(item==Level::jewel) map[x][y]='*';
+            else if(item==Level::restore_health) map[x][y]='r';
+            else if(item==Level::extra_life) map[x][y]='e';
+            else if(item==Level::ammo) map[x][y]='a';
+            else map[x][y]='?';
         }
-    }
-    for(int x=0; x<15; x++){
-        for(int y=0; y<15; y++){
-            cout<<map[x][y];
-        }
-        cout<<endl;
     }
     ////////////end of load level //////////////////////////
     return GWSTATUS_CONTINUE_GAME;
@@ -61,7 +54,27 @@ int StudentWorld:: init(){
 int StudentWorld:: move(){
     //decLives();
     pp->doSomething();
+    if(!pp->isAlive()){
+        decLives();
+        return GWSTATUS_PLAYER_DIED;
+    }
     return GWSTATUS_CONTINUE_GAME;
 }
 
-void StudentWorld:: cleanUp(){}
+void StudentWorld:: cleanUp(){
+    delete pp;
+    vector<Actor*> :: iterator ap = av.begin();
+    while(ap!=av.end()){
+        delete *ap;
+        ap = av.erase(ap);
+    }
+}
+
+
+
+
+
+
+
+
+

@@ -18,6 +18,8 @@ public:
 	StudentWorld(std::string assetDir)
 	 : GameWorld(assetDir)
 	{}
+    
+    virtual ~StudentWorld(){cout<<"StudentWorld::destructing"<<endl; cleanUp();}
 
     virtual int init();
 
@@ -26,10 +28,13 @@ public:
     virtual void cleanUp();
     
     int loadLevel();
+    
+    char getMapCotent(int x, int y) const{return map[x][y];}
 
 private:
     Player* pp;
     vector<Actor*> av;
+    char map[15][15];
 };
 
 #endif // STUDENTWORLD_H_
