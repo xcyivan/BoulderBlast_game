@@ -30,6 +30,8 @@ public:
     int loadLevel();
     
     char getMapCotent(int x, int y) const{return map[x][y];}
+    
+    Player* getPlayer() const{return pp;}
 
 private:
     Player* pp;

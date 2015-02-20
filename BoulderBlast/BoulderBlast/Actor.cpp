@@ -30,9 +30,45 @@ int Player::doSomething(){
         else if(ch== KEY_PRESS_SPACE) cout<<"space"<<endl;
         else if(ch== KEY_PRESS_ESCAPE) {
             m_hitpoints=0;
-            m_alive=false;
+            setDeath();
         }
     }
     return 0;
 
+}
+
+int Wall::doSomething(){
+    return 0;
+}
+
+int Boulder::doSomething(){
+    return 0;
+}
+
+int Hole::doSomething(){
+    return 0;
+}
+
+int Goodie::doSomething(){
+    if(getWorld()->getPlayer()->getX()==getX()&&getWorld()->getPlayer()->getY()==getY()){
+        setDeath();
+        return -1;
+    }
+    return 0;
+}
+
+int Jewel::doSomething(){
+    return Goodie::doSomething();
+}
+
+int ExtraLifeGoodie::doSomething(){
+    return Goodie::doSomething();
+}
+
+int RestoreLifeGoodie::doSomething(){
+    return Goodie::doSomething();
+}
+
+int AmmoGoodie:: doSomething(){
+    return Goodie::doSomething();
 }
