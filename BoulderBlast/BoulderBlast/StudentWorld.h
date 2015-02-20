@@ -23,7 +23,7 @@ public:
          levelArray[1]="level01.dat";
          levelArray[2]="level02.dat";
          levelArray[3]="level03.dat";
-         levelArray[4]="level04.dat";
+         levelArray[4]="happynewyear.dat";
      }
     
     virtual ~StudentWorld(){cout<<"StudentWorld::destructing"<<endl; cleanUp();}
