@@ -47,6 +47,10 @@ public:
     void increaseAmmo(int howMuch){m_ammo+=howMuch;cout<<"now the ammo is "<<m_ammo<<endl;}
     
     void restoreHealth(){m_hitpoints=20;cout<<"now the player's hitpoints is "<<m_hitpoints<<endl;}
+    
+    int getHealth() const{return m_hitpoints;}
+    
+    int getAmmo() const{return m_ammo;}
         
 private:
     int m_hitpoints;

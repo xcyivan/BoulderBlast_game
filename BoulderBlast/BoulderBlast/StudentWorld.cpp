@@ -1,5 +1,4 @@
 #include "StudentWorld.h"
-#include <string>
 using namespace std;
 
 GameWorld* createStudentWorld(string assetDir)
@@ -13,6 +12,7 @@ int StudentWorld:: init(){
     
     ////////load level///////////////
     string curLevel = "level02.dat";
+    setBonus(1000);
     Level lev(assetDirectory());
     Level::LoadResult result = lev.loadLevel(curLevel);
     if (result == Level::load_fail_file_not_found || result == Level:: load_fail_bad_format)
@@ -72,12 +72,14 @@ int StudentWorld:: init(){
 
 int StudentWorld:: move(){
     cout<<"move()::==============="<<endl;
-    //decLives();
-    //pp->doSomething();
+    //update the game text
+    setDisplayText();
+    //ask Player to do something
     if(pp->doSomething()==-1){
         decLives();
         return GWSTATUS_PLAYER_DIED;
     }
+    //ask other objects to do something and delete dead objects
     vector<Actor*> :: iterator ap = av.begin();
     while(ap!=av.end()){
         int result =(*ap)->doSomething();
@@ -88,6 +90,9 @@ int StudentWorld:: move(){
         }
         else ap++;
     }
+    
+    //decrease the bonus
+    decBonus();
     return GWSTATUS_CONTINUE_GAME;
 }
 
@@ -100,6 +105,32 @@ void StudentWorld:: cleanUp(){
     }
 }
 
+void StudentWorld::setDisplayText(){
+    int score = getScore();
+    int level = getLevel();
+    int bonus = getBonus();
+    int lives = getLives();
+    int health = pp->getHealth();
+    int ammo = pp->getAmmo();
+    string s = transform(score, level, bonus, lives, health, ammo);
+    setGameStatText(s);
+}
+
+string StudentWorld::transform(int score, int level, int bonus, int lives, int health, int ammo){
+    int healthPct = 100*health/20;
+    ostringstream oss;
+    oss.fill('0');
+    oss<<"Score: "<<setw(7)<<score<<"  "
+	   <<"Level: "<<setw(2)<<level<<"  ";
+    oss.fill(' ');
+    oss<<"Lives: "<<setw(2)<<lives<<"  "
+	   <<"Health: "<<setw(3)<<healthPct<<'%'<<"  "
+	   <<"Ammo: "<<setw(3)<<ammo<<"  "
+    <<"Bonus: "<<setw(4)<<bonus<<endl;
+    
+    string s = oss.str();
+    return s;
+}
 
 
 
