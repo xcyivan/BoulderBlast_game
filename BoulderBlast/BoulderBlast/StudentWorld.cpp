@@ -10,9 +10,13 @@ GameWorld* createStudentWorld(string assetDir)
 /////////////init()///////////////////////////
 int StudentWorld:: init(){
     
-    ////////load level///////////////
-    string curLevel = "level02.dat";
+    ///////reset parameters/////////
     setBonus(1000);
+    m_canExit=false;
+
+    
+    ////////load level///////////////
+    string curLevel = getLevelDat(getLevel());
     Level lev(assetDirectory());
     Level::LoadResult result = lev.loadLevel(curLevel);
     if (result == Level::load_fail_file_not_found || result == Level:: load_fail_bad_format)
@@ -90,6 +94,7 @@ int StudentWorld:: move(){
             delete *ap;
             ap = av.erase(ap);
         }
+        else if(result==-2) return GWSTATUS_FINISHED_LEVEL;
         else ap++;
     }
     

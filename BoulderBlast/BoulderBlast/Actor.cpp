@@ -61,7 +61,8 @@ int Goodie::doSomething(){
 int Exit::doSomething(){
     if(getWorld()->canExit() && Goodie::doSomething()==-1){
         cout<<"CONGRATULATIONS! YOU FIND THE EXIT!!"<<endl;
-        return -1;
+        getWorld()->incLives();
+        return -2;
     }
     return 0;
 }
