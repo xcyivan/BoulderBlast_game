@@ -73,8 +73,8 @@ int StudentWorld:: init(){
 int StudentWorld:: move(){
     cout<<"move()::==============="<<endl;
     //decLives();
-    pp->doSomething();
-    if(!pp->isAlive()){
+    //pp->doSomething();
+    if(pp->doSomething()==-1){
         decLives();
         return GWSTATUS_PLAYER_DIED;
     }

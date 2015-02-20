@@ -31,6 +31,7 @@ int Player::doSomething(){
         else if(ch== KEY_PRESS_ESCAPE) {
             m_hitpoints=0;
             setDeath();
+            return -1;
         }
     }
     return 0;
@@ -58,17 +59,36 @@ int Goodie::doSomething(){
 }
 
 int Jewel::doSomething(){
-    return Goodie::doSomething();
+    if(Goodie::doSomething()==-1) {
+        getWorld()->increaseScore(50);
+        return -1;
+    }
+    return 0;
 }
 
 int ExtraLifeGoodie::doSomething(){
-    return Goodie::doSomething();
+    if(Goodie::doSomething()==-1){
+        getWorld()->increaseScore(1000);
+        getWorld()->incLives();
+        return -1;
+    }
+    return 0;
 }
 
 int RestoreLifeGoodie::doSomething(){
-    return Goodie::doSomething();
+    if(Goodie::doSomething()==-1){
+        getWorld()->increaseScore(500);
+        getWorld()->getPlayer()->restoreHealth();
+        return -1;
+    }
+    return 0;
 }
 
 int AmmoGoodie:: doSomething(){
-    return Goodie::doSomething();
+    if(Goodie::doSomething()==-1){
+        getWorld()->increaseScore(100);
+        getWorld()->getPlayer()->increaseAmmo(20);
+        return  -1;
+    }
+    return 0;
 }

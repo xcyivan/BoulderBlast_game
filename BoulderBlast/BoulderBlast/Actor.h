@@ -44,6 +44,10 @@ public:
     
     virtual int doSomething();
     
+    void increaseAmmo(int howMuch){m_ammo+=howMuch;cout<<"now the ammo is "<<m_ammo<<endl;}
+    
+    void restoreHealth(){m_hitpoints=20;cout<<"now the player's hitpoints is "<<m_hitpoints<<endl;}
+        
 private:
     int m_hitpoints;
     int m_ammo;

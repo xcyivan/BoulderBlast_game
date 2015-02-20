@@ -3,6 +3,7 @@
 
 #include "GameConstants.h"
 #include <string>
+#include <iostream>
 
 const int START_PLAYER_LIVES = 3;
 
@@ -48,6 +49,7 @@ public:
 	
 	void incLives() {
 		m_lives++;
+        std::cout<<"now the life is "<<m_lives<<std::endl;
 	}
 
 	unsigned int getScore() const
@@ -58,6 +60,7 @@ public:
 	void increaseScore(unsigned int howMuch)
 	{
 		m_score += howMuch;
+        std::cout<<"now the score is "<<m_score<<std::endl;
 	}
 	
 	  // The following should be used by only the framework, not the student
