@@ -12,8 +12,8 @@ class StudentWorld;
 /////////////Actor class ///////////////////////
 class Actor : public GraphObject{
 public:
-    Actor(StudentWorld* sw,int imageID, int startX, int startY, Direction dir = none)
-    :GraphObject(imageID, startX, startY, dir), m_sworld(sw), m_alive(true){
+    Actor(StudentWorld* sw,int imageID, int startX, int startY, Direction dir = none, string name="actor")
+    :GraphObject(imageID, startX, startY, dir), m_sworld(sw), m_alive(true), m_name(name){
         setVisible(true);
     }
     
@@ -26,10 +26,13 @@ public:
     bool isAlive(){return m_alive;}
     
     void setDeath(){m_alive=false;}
+    
+    string getName(){return m_name;}
 
 private:
     StudentWorld* m_sworld;
     bool m_alive;
+    string m_name;
 };
 
 
@@ -38,7 +41,7 @@ private:
 class Player : public Actor{
 public:
     Player(StudentWorld* sw,int startX, int startY)
-    :Actor(sw, IID_PLAYER, startX, startY, right), m_hitpoints(20), m_ammo(20){}
+    :Actor(sw, IID_PLAYER, startX, startY, right, "player"), m_hitpoints(20), m_ammo(20){}
     
     virtual ~Player(){cout<<"the Player is gone"<<endl;}
     
@@ -63,7 +66,7 @@ private:
 class Wall : public Actor{
 public:
     Wall(StudentWorld* sw, int startX, int startY)
-    :Actor(sw, IID_WALL, startX, startY, none){}
+    :Actor(sw, IID_WALL, startX, startY, none, "wall"){}
     
     virtual ~Wall(){cout<<"the Wall is gone"<<endl;}
     
@@ -74,7 +77,7 @@ public:
 class Boulder : public Actor{
 public:
     Boulder(StudentWorld* sw, int startX, int startY)
-    :Actor(sw, IID_BOULDER, startX, startY, none),m_hitpoints(10){}
+    :Actor(sw, IID_BOULDER, startX, startY, none, "boulder"),m_hitpoints(10){}
     
     virtual ~Boulder(){cout<<"the Boulder is gone"<<endl;}
     
@@ -88,7 +91,7 @@ private:
 class Hole : public Actor{
 public:
     Hole(StudentWorld* sw, int startX, int startY)
-    :Actor(sw, IID_HOLE, startX, startY, none){}
+    :Actor(sw, IID_HOLE, startX, startY, none, "hole"){}
     
     virtual ~Hole(){cout<<"the Hole is gone"<<endl;}
 
@@ -98,11 +101,23 @@ public:
 ////////////Goodie class////////////////////
 class Goodie: public Actor{
 public:
-    Goodie(StudentWorld* sw, int imageID, int startX, int startY, Direction dir=none)
-    :Actor(sw, imageID, startX, startY, dir){}
+    Goodie(StudentWorld* sw, int imageID, int startX, int startY, Direction dir=none, string name="goodie")
+    :Actor(sw, imageID, startX, startY, dir, name){}
 
     virtual int doSomething();
 
+};
+
+///////////Exit class/////////////////////
+class Exit: public Goodie{
+public:
+    Exit(StudentWorld* sw, int startX, int startY)
+    :Goodie(sw,  IID_EXIT, startX, startY, none, "exit"){
+        setVisible(false);
+    }
+    virtual ~Exit(){cout<<"the Exit is gone"<<endl;}
+    
+    virtual int doSomething();
 };
 
 
@@ -110,7 +125,7 @@ public:
 class Jewel : public Goodie{
 public:
     Jewel(StudentWorld* sw, int startX, int startY)
-    :Goodie(sw, IID_JEWEL, startX, startY, none){}
+    :Goodie(sw, IID_JEWEL, startX, startY, none, "jewel"){}
     
     virtual ~Jewel(){cout<<"the Jewel is gone"<<endl;}
     
@@ -121,7 +136,7 @@ public:
 class ExtraLifeGoodie: public Goodie{
 public:
     ExtraLifeGoodie(StudentWorld* sw, int startX, int startY)
-    :Goodie(sw, IID_EXTRA_LIFE, startX, startY, none){}
+    :Goodie(sw, IID_EXTRA_LIFE, startX, startY, none, "extra"){}
     
     virtual ~ExtraLifeGoodie(){cout<<"the ExtraLifeGoodie is gone"<<endl;}
     
@@ -132,7 +147,7 @@ public:
 class RestoreLifeGoodie : public Goodie{
 public:
     RestoreLifeGoodie(StudentWorld* sw,int startX, int startY)
-    :Goodie(sw, IID_RESTORE_HEALTH, startX, startY){}
+    :Goodie(sw, IID_RESTORE_HEALTH, startX, startY, none, "restore"){}
     
     virtual ~RestoreLifeGoodie(){cout<<"the RestoreLifeGoodie is gone"<<endl;}
     
@@ -143,7 +158,7 @@ public:
 class AmmoGoodie : public Goodie{
 public:
     AmmoGoodie(StudentWorld* sw, int startX, int startY)
-    :Goodie(sw, IID_AMMO, startX, startY){}
+    :Goodie(sw, IID_AMMO, startX, startY, none, "ammo"){}
     
     virtual ~AmmoGoodie(){cout<<"the AmmoGoodie is gone"<<endl;}
     

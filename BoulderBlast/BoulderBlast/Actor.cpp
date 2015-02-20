@@ -58,9 +58,18 @@ int Goodie::doSomething(){
     return 0;
 }
 
+int Exit::doSomething(){
+    if(getWorld()->canExit() && Goodie::doSomething()==-1){
+        cout<<"CONGRATULATIONS! YOU FIND THE EXIT!!"<<endl;
+        return -1;
+    }
+    return 0;
+}
+
 int Jewel::doSomething(){
     if(Goodie::doSomething()==-1) {
         getWorld()->increaseScore(50);
+        getWorld()->decJewCount();
         return -1;
     }
     return 0;

@@ -24,7 +24,10 @@ int StudentWorld:: init(){
             Level:: MazeEntry item = lev.getContentsOf(x, y);
             
             if(item==Level:: empty) map[x][y]=' ';
-            else if(item==Level::exit) map[x][y]='x';
+            else if(item==Level::exit) {
+                map[x][y]='x';
+                av.push_back(new Exit(this,x,y));
+            }
             else if(item==Level::player) {
                 map[x][y]='@';
                 pp = new Player(this, x, y);
@@ -48,6 +51,7 @@ int StudentWorld:: init(){
             else if(item==Level::jewel) {
                 map[x][y]='*';
                 av.push_back(new Jewel(this,x,y));
+                m_jewelCount++;
             }
             else if(item==Level::restore_health) {
                 map[x][y]='r';
@@ -72,8 +76,6 @@ int StudentWorld:: init(){
 
 int StudentWorld:: move(){
     cout<<"move()::==============="<<endl;
-    //update the game text
-    setDisplayText();
     //ask Player to do something
     if(pp->doSomething()==-1){
         decLives();
@@ -93,6 +95,20 @@ int StudentWorld:: move(){
     
     //decrease the bonus
     decBonus();
+    
+    //expose exit if possible
+    if(m_jewelCount==0) {
+        m_canExit=true;
+        vector<Actor*> :: iterator ap = av.begin();
+        while(ap!=av.end()){
+            if((*ap)->getName()=="exit") (*ap)->setVisible(true);
+            ap++;
+        }
+    }
+    
+    //update the game text
+    setDisplayText();
+    
     return GWSTATUS_CONTINUE_GAME;
 }
 
