@@ -81,10 +81,28 @@ int StudentWorld:: init(){
 int StudentWorld:: move(){
     cout<<"move()::==============="<<endl;
     //ask Player to do something
-    if(pp->doSomething()==-1){
+    int ppstatus = pp->doSomething();
+    if(ppstatus==-1){
         decLives();
         return GWSTATUS_PLAYER_DIED;
     }
+    else if(ppstatus==Actor::up){
+        av.push_back(new Bullet(this, pp->getX(), pp->getY()+1, Actor::up));
+        map[pp->getX()][pp->getY()+1]='.';
+    }
+    else if(ppstatus==Actor::down){
+        av.push_back(new Bullet(this, pp->getX(), pp->getY()-1, Actor::down));
+        map[pp->getX()][pp->getY()-1]='.';
+    }
+    else if(ppstatus==Actor::left){
+        av.push_back(new Bullet(this, pp->getX()-1, pp->getY(), Actor::left));
+        map[pp->getX()-1][pp->getY()]='.';
+    }
+    else if(ppstatus==Actor::right){
+        av.push_back(new Bullet(this, pp->getX()+1, pp->getY(), Actor::right));
+        map[pp->getX()][pp->getY()]='.';
+    }
+
     //ask other objects to do something and delete dead objects
     vector<Actor*> :: iterator ap = av.begin();
     while(ap!=av.end()){
@@ -152,8 +170,6 @@ string StudentWorld::transform(int score, int level, int bonus, int lives, int h
     string s = oss.str();
     return s;
 }
-
-
 
 
 

@@ -41,7 +41,8 @@ private:
 class Player : public Actor{
 public:
     Player(StudentWorld* sw,int startX, int startY)
-    :Actor(sw, IID_PLAYER, startX, startY, right, "player"), m_hitpoints(20), m_ammo(20){}
+    :Actor(sw, IID_PLAYER, startX, startY, right, "player"),
+    m_hitpoints(20), m_ammo(20){}
     
     virtual ~Player(){cout<<"the Player is gone"<<endl;}
     
@@ -71,6 +72,15 @@ public:
     
     virtual ~Wall(){cout<<"the Wall is gone"<<endl;}
     
+    virtual int doSomething();
+};
+
+////////////Bullet class/////////////////////////
+class Bullet : public Actor{
+public:
+    Bullet(StudentWorld* sw, int startX, int startY, Direction dir)
+    :Actor(sw, IID_BULLET, startX, startY, dir, "bullet"){}
+    virtual ~Bullet(){cout<<"the bullect is goine"<<endl;}
     virtual int doSomething();
 };
 

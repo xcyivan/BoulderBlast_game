@@ -9,36 +9,94 @@ int Player::doSomething(){
         // user hit a key this tick! switch (ch)
         if(ch== KEY_PRESS_LEFT) {
             setDirection(left);
-            if((getWorld()->getMapCotent(getX()-1, getY()))!='#')
+            if((getWorld()->getMapContent(getX()-1, getY()))!='#'){
+                getWorld()->setMapContent(getX(), getY(), ' ');
+                getWorld()->setMapContent(getX()-1, getY(), '@');
                 moveTo(getX()-1,getY());
+            }
+            
         }
         else if(ch== KEY_PRESS_RIGHT) {
             setDirection(right);
-            if((getWorld()->getMapCotent(getX()+1, getY()))!='#')
+            if((getWorld()->getMapContent(getX()+1, getY()))!='#'){
+                getWorld()->setMapContent(getX(), getY(), ' ');
+                getWorld()->setMapContent(getX()+1, getY(), '@');
                 moveTo(getX()+1,getY());
+            }
         }
         else if(ch== KEY_PRESS_UP) {
             setDirection(up);
-            if((getWorld()->getMapCotent(getX(), getY()+1))!='#')
+            if((getWorld()->getMapContent(getX(), getY()+1))!='#'){
+                getWorld()->setMapContent(getX(), getY(), ' ');
+                getWorld()->setMapContent(getX(), getY()+1, '@');
                 moveTo(getX(),getY()+1);
+            }
         }
         else if(ch== KEY_PRESS_DOWN) {
             setDirection(down);
-            if((getWorld()->getMapCotent(getX(), getY()-1))!='#')
+            if((getWorld()->getMapContent(getX(), getY()-1))!='#'){
+                getWorld()->setMapContent(getX(), getY(), ' ');
+                getWorld()->setMapContent(getX(), getY()-1, '@');
                 moveTo(getX(),getY()-1);
+            }
         }
-        else if(ch== KEY_PRESS_SPACE) cout<<"space"<<endl;
+        else if(ch== KEY_PRESS_SPACE) {
+            return getDirection();
+            //inform the StudentWorld that a bullet should be created and use this returned value to set the direction
+        }
         else if(ch== KEY_PRESS_ESCAPE) {
             m_hitpoints=0;
             setDeath();
             return -1;
         }
     }
+    char m[15][15];
+    for(int x=0; x<15; x++){
+        for(int y=0; y<15;y++){
+            m[x][y]=getWorld()->getMapContent(y, 14-x);
+            cout<<m[x][y];
+        }
+        cout<<endl;
+    }
     return 0;
 
 }
 
 int Wall::doSomething(){
+    return 0;
+}
+
+int Bullet::doSomething(){
+    if(!isAlive()) return -1;
+    if(getDirection()==up){//if goes up
+        if(getWorld()->getMapContent(getX(), getY()+1)==' '){//can move
+            getWorld()->setMapContent(getX(), getY(), ' ');
+            getWorld()->setMapContent(getX(), getY()+1, '.');
+            moveTo(getX(),getY()+1);
+        }
+    }
+    else if(getDirection()==down){//if goes down
+        if((getWorld()->getMapContent(getX(), getY()-1))==' '){
+            getWorld()->setMapContent(getX(), getY(), ' ');
+            getWorld()->setMapContent(getX(), getY()-1, '.');
+            moveTo(getX(),getY()-1);
+        }
+    }
+    else if(getDirection()==left){
+        if((getWorld()->getMapContent(getX()-1, getY()))==' '){
+            getWorld()->setMapContent(getX(), getY(), ' ');
+            getWorld()->setMapContent(getX()-1, getY(), '.');
+            moveTo(getX()-1,getY());
+        }
+    }
+    else if(getDirection()==right){
+        if((getWorld()->getMapContent(getX()+1, getY()))==' '){
+            getWorld()->setMapContent(getX(), getY(), ' ');
+            getWorld()->setMapContent(getX()+1, getY(), '.');
+            moveTo(getX()+1,getY());
+        }
+    }
+    
     return 0;
 }
 
@@ -53,6 +111,7 @@ int Hole::doSomething(){
 int Goodie::doSomething(){
     if(getWorld()->getPlayer()->getX()==getX()&&getWorld()->getPlayer()->getY()==getY()){
         setDeath();
+        getWorld()->setMapContent(getX(), getY(), ' ');
         return -1;
     }
     return 0;

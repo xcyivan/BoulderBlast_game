@@ -41,12 +41,16 @@ public:
     void setBonus(int howMuch){m_bonus=howMuch;}
     void decBonus(){if(m_bonus>0) m_bonus--;}
     int getBonus() const{return m_bonus;}
-    char getMapCotent(int x, int y){return map[x][y];}
+    
+    char getMapContent(int x, int y){return map[x][y];}
+    void setMapContent(int x, int y, char c){map[x][y]=c;}
+    
     void decJewCount(){if(m_jewelCount>0) m_jewelCount--;}
     int getJewCount(){return m_jewelCount;}
     bool canExit(){return m_canExit;}
     
     string getLevelDat(int i){return levelArray[i];}
+    
 
 private:
     Player* pp;
