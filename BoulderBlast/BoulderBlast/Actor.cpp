@@ -147,11 +147,25 @@ bool Boulder::pushed(Direction dir){
 }
 
 int Boulder::doSomething(){
-    if(isAlive()==false) return -1;
+    if(isAlive()==false) {return -1;}
     return 0;
 }
 
 int Hole::doSomething(){
+    if(isAlive()==false) return -1;
+    vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
+    for(int i=0; i<v.size();i++){
+        if(v.at(i)->getName()=="boulder"){
+            v.at(i)->setDeath();   //I don't know why this line doesn't work
+//            v.at(i)->damage();
+//            v.at(i)->damage();
+//            v.at(i)->damage();
+//            v.at(i)->damage();
+//            v.at(i)->damage();
+            setDeath();
+            return -1;
+        }
+    }
     return 0;
 }
 

@@ -25,7 +25,7 @@ public:
     
     virtual bool isAlive(){return m_alive;}
     
-    void setDeath(){m_alive=false;}
+    void setDeath(){ m_alive=false;}
     
     string getName(){return m_name;}
     
@@ -104,8 +104,9 @@ public:
     virtual void damage(){m_hitpoints -= 2;}
     
     virtual bool isAlive(){
+        if(Actor::isAlive()==false) return false;
         if(m_hitpoints==0){
-            setDeath();
+            Actor::setDeath();
             return false;
         }
         return true;
