@@ -9,34 +9,41 @@ int Player::doSomething(){
         // user hit a key this tick! switch (ch)
         if(ch== KEY_PRESS_LEFT) {
             setDirection(left);
-            if((getWorld()->getMapContent(getX()-1, getY()))!='#'){
-                getWorld()->setMapContent(getX(), getY(), ' ');
-                getWorld()->setMapContent(getX()-1, getY(), '@');
+            if((getWorld()->getMapAt(getX()-1,getY())).size()==0 ||
+               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="jewel" ||
+               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="extra" ||
+               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="restore" ||
+               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="ammo"){
                 moveTo(getX()-1,getY());
             }
-            
         }
         else if(ch== KEY_PRESS_RIGHT) {
             setDirection(right);
-            if((getWorld()->getMapContent(getX()+1, getY()))!='#'){
-                getWorld()->setMapContent(getX(), getY(), ' ');
-                getWorld()->setMapContent(getX()+1, getY(), '@');
+            if((getWorld()->getMapAt(getX()+1,getY())).size()==0 ||
+               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="jewel" ||
+               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="extra" ||
+               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="restore" ||
+               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="ammo"){
                 moveTo(getX()+1,getY());
             }
         }
         else if(ch== KEY_PRESS_UP) {
             setDirection(up);
-            if((getWorld()->getMapContent(getX(), getY()+1))!='#'){
-                getWorld()->setMapContent(getX(), getY(), ' ');
-                getWorld()->setMapContent(getX(), getY()+1, '@');
+            if((getWorld()->getMapAt(getX(),getY()+1)).size()==0 ||
+               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="jewel" ||
+               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="extra" ||
+               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="restore" ||
+               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="ammo"){
                 moveTo(getX(),getY()+1);
             }
         }
         else if(ch== KEY_PRESS_DOWN) {
             setDirection(down);
-            if((getWorld()->getMapContent(getX(), getY()-1))!='#'){
-                getWorld()->setMapContent(getX(), getY(), ' ');
-                getWorld()->setMapContent(getX(), getY()-1, '@');
+            if((getWorld()->getMapAt(getX(),getY()-1)).size()==0 ||
+               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="jewel" ||
+               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="extra" ||
+               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="restore" ||
+               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="ammo"){
                 moveTo(getX(),getY()-1);
             }
         }
@@ -50,14 +57,6 @@ int Player::doSomething(){
             return -1;
         }
     }
-    char m[15][15];
-    for(int x=0; x<15; x++){
-        for(int y=0; y<15;y++){
-            m[x][y]=getWorld()->getMapContent(y, 14-x);
-            cout<<m[x][y];
-        }
-        cout<<endl;
-    }
     return 0;
 
 }
@@ -68,39 +67,32 @@ int Wall::doSomething(){
 
 int Bullet::doSomething(){
     if(!isAlive()) return -1;
-    if(getDirection()==up){//if goes up
-        if(getWorld()->getMapContent(getX(), getY()+1)==' '){//can move
-            getWorld()->setMapContent(getX(), getY(), ' ');
-            getWorld()->setMapContent(getX(), getY()+1, '.');
-            moveTo(getX(),getY()+1);
+    //if the bullet is currently hitting something
+    if((getWorld()->getMapAt(getX(), getY())).size()!=0){
+        vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
+        for(int i=0; i<v.size(); i++){
+            if(v.at(i)->getName()=="wall") {setDeath(); return -1;}
+            else if (v.at(i)->getName()=="boulder"){v.at(i)->damage();setDeath(); return -1;}
         }
+    }
+    if(getDirection()==up){//if goes up
+        moveTo(getX(),getY()+1);
     }
     else if(getDirection()==down){//if goes down
-        if((getWorld()->getMapContent(getX(), getY()-1))==' '){
-            getWorld()->setMapContent(getX(), getY(), ' ');
-            getWorld()->setMapContent(getX(), getY()-1, '.');
-            moveTo(getX(),getY()-1);
-        }
+        moveTo(getX(),getY()-1);
     }
-    else if(getDirection()==left){
-        if((getWorld()->getMapContent(getX()-1, getY()))==' '){
-            getWorld()->setMapContent(getX(), getY(), ' ');
-            getWorld()->setMapContent(getX()-1, getY(), '.');
-            moveTo(getX()-1,getY());
-        }
+    else if(getDirection()==left){//if goes left
+        moveTo(getX()-1,getY());
     }
-    else if(getDirection()==right){
-        if((getWorld()->getMapContent(getX()+1, getY()))==' '){
-            getWorld()->setMapContent(getX(), getY(), ' ');
-            getWorld()->setMapContent(getX()+1, getY(), '.');
-            moveTo(getX()+1,getY());
-        }
+    else if(getDirection()==right){//if goes right
+        moveTo(getX()+1,getY());
     }
     
     return 0;
 }
 
 int Boulder::doSomething(){
+    if(isAlive()==false) return -1;
     return 0;
 }
 
@@ -111,7 +103,6 @@ int Hole::doSomething(){
 int Goodie::doSomething(){
     if(getWorld()->getPlayer()->getX()==getX()&&getWorld()->getPlayer()->getY()==getY()){
         setDeath();
-        getWorld()->setMapContent(getX(), getY(), ' ');
         return -1;
     }
     return 0;

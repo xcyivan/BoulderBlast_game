@@ -23,11 +23,13 @@ public:
     
     StudentWorld* getWorld() const{return m_sworld;}
     
-    bool isAlive(){return m_alive;}
+    virtual bool isAlive(){return m_alive;}
     
     void setDeath(){m_alive=false;}
     
     string getName(){return m_name;}
+    
+    virtual void damage(){cout<<"Oh I'm damaged"<<endl;}
 
 private:
     StudentWorld* m_sworld;
@@ -54,6 +56,8 @@ public:
     
     void restoreHealth(){m_hitpoints=20;cout<<"now the player's hitpoints is "<<m_hitpoints<<endl;}
     int getHealth() const{return m_hitpoints;}
+    
+    virtual void damage(){cout<<"Oh I'm damaged"<<endl;}
     
     
         
@@ -93,6 +97,16 @@ public:
     virtual ~Boulder(){cout<<"the Boulder is gone"<<endl;}
     
     virtual int doSomething();
+    
+    virtual void damage(){m_hitpoints -= 2;}
+    
+    virtual bool isAlive(){
+        if(m_hitpoints==0){
+            setDeath();
+            return false;
+        }
+        return true;
+    }
 
 private:
     int m_hitpoints;

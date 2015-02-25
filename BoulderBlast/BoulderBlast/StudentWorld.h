@@ -42,8 +42,8 @@ public:
     void decBonus(){if(m_bonus>0) m_bonus--;}
     int getBonus() const{return m_bonus;}
     
-    char getMapContent(int x, int y){return map[x][y];}
-    void setMapContent(int x, int y, char c){map[x][y]=c;}
+    vector<Actor*> getMapAt(int x, int y);
+
     
     void decJewCount(){if(m_jewelCount>0) m_jewelCount--;}
     int getJewCount(){return m_jewelCount;}

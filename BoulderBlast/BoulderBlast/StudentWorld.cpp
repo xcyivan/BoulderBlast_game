@@ -86,6 +86,7 @@ int StudentWorld:: move(){
         decLives();
         return GWSTATUS_PLAYER_DIED;
     }
+    //if fire a bullet
     else if(ppstatus==Actor::up){
         av.push_back(new Bullet(this, pp->getX(), pp->getY()+1, Actor::up));
         map[pp->getX()][pp->getY()+1]='.';
@@ -170,6 +171,16 @@ string StudentWorld::transform(int score, int level, int bonus, int lives, int h
     string s = oss.str();
     return s;
 }
+
+vector<Actor*> StudentWorld::getMapAt(int x, int y){
+    vector<Actor*> ret;
+    if(pp->getX()==x && pp->getY()==y) ret.push_back(pp);
+    for(vector<Actor*>::iterator p=av.begin(); p!=av.end(); p++){
+        if((*p)->getX()==x && (*p)->getY()==y) ret.push_back(*p);
+    }
+    return ret;
+}
+
 
 
 
