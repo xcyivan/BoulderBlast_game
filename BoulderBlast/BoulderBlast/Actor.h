@@ -68,6 +68,43 @@ private:
     int m_hitpoints;
     int m_ammo;
 };
+////////////Snarlbot class//////////////////////
+//m_vh=right means horizontal, m_vh=down mean vertical;
+class Snarlbot : public Actor{
+public:
+    Snarlbot(StudentWorld* sw, int startX, int startY, Direction dir)
+    :Actor(sw, IID_SNARLBOT, startX, startY, dir, "snarlbot"),
+     m_vh(dir), ticksCount(0), m_hitpoints(10){}
+    
+    virtual ~Snarlbot(){cout<<"The Snarlbot is gone!"<<endl;}
+    
+    virtual int doSomething();
+    bool canMove();
+    
+    virtual void damage(){m_hitpoints -= 2;}
+    
+    virtual bool isAlive(){
+        if(Actor::isAlive()==false) return false;
+        if(m_hitpoints==0){
+            Actor::setDeath();
+            return false;
+        }
+        return true;
+    }
+    
+
+private:
+    Direction m_vh;
+    int ticksCount;
+    int m_hitpoints;
+
+
+
+
+
+
+
+};
 
 
 /////////////Wall class//////////////////////////

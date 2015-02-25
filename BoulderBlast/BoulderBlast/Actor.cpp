@@ -83,6 +83,21 @@ int Player::doSomething(){
     return 0;
 
 }
+bool Snarlbot::canMove(){
+    int level = getWorld()->getLevel();
+    int ticks = (28-level)/4;
+    if (ticks<3) ticks=3;
+    ticksCount = (ticksCount+1)%ticks;
+    if(ticksCount==0) return true;
+    else return false;
+}
+int Snarlbot::doSomething(){
+    if(!isAlive()) return -1;
+    if(!canMove())return 0;
+    
+    cout<<"haha! I'm moving!"<<endl;
+    return 0;
+}
 
 int Wall::doSomething(){
     return 0;
@@ -95,7 +110,11 @@ int Bullet::doSomething(){
         vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
         for(int i=0; i<v.size(); i++){
             if(v.at(i)->getName()=="wall") {setDeath(); return -1;}
-            else if (v.at(i)->getName()=="boulder"){v.at(i)->damage();setDeath(); return -1;}
+            else if (v.at(i)->getName()=="boulder" || v.at(i)->getName()=="snarlbot"){
+                v.at(i)->damage();
+                setDeath();
+                return -1;
+            }
         }
     }
     if(getDirection()==up){//if goes up

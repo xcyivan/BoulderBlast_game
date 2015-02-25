@@ -36,8 +36,14 @@ int StudentWorld:: init(){
                 map[x][y]='@';
                 pp = new Player(this, x, y);
             }
-            else if(item==Level::horiz_snarlbot) map[x][y]='h';
-            else if(item==Level::vert_snarlbot) map[x][y]='v';
+            else if(item==Level::horiz_snarlbot) {
+                av.push_back(new Snarlbot(this, x, y, Actor::right));
+                map[x][y]='h';
+            }
+            else if(item==Level::vert_snarlbot) {
+                av.push_back(new Snarlbot(this, x, y, Actor::down));
+                map[x][y]='v';
+            }
             else if(item==Level::kleptobot_factory) map[x][y]='1';
             else if(item==Level::angry_kleptobot_factory) map[x][y]='2';
             else if(item==Level::wall) {
