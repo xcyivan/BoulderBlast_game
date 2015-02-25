@@ -30,6 +30,8 @@ public:
     string getName(){return m_name;}
     
     virtual void damage(){cout<<"Oh I'm damaged"<<endl;}
+    
+    virtual bool pushed(Direction dir){return false;}
 
 private:
     StudentWorld* m_sworld;
@@ -53,6 +55,7 @@ public:
     void increaseAmmo(int howMuch){m_ammo+=howMuch;cout<<"now the ammo is "<<m_ammo<<endl;}
     void resetAmmo(){m_ammo=20;}
     int getAmmo() const{return m_ammo;}
+    void decreaseAmmo(){if(m_ammo>0) m_ammo--;}
     
     void restoreHealth(){m_hitpoints=20;cout<<"now the player's hitpoints is "<<m_hitpoints<<endl;}
     int getHealth() const{return m_hitpoints;}
@@ -107,6 +110,8 @@ public:
         }
         return true;
     }
+    
+    virtual bool pushed(Direction);
 
 private:
     int m_hitpoints;

@@ -16,6 +16,10 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="ammo"){
                 moveTo(getX()-1,getY());
             }
+            else if((getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="boulder"){
+                if((getWorld()->getMapAt(getX()-1,getY())).at(0)->pushed(left))//if can push left
+                   moveTo(getX()-1,getY());
+            }
         }
         else if(ch== KEY_PRESS_RIGHT) {
             setDirection(right);
@@ -25,6 +29,10 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="restore" ||
                (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="ammo"){
                 moveTo(getX()+1,getY());
+            }
+            else if((getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="boulder"){
+                if((getWorld()->getMapAt(getX()+1,getY())).at(0)->pushed(right))//if can push right
+                    moveTo(getX()+1,getY());
             }
         }
         else if(ch== KEY_PRESS_UP) {
@@ -36,6 +44,10 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="ammo"){
                 moveTo(getX(),getY()+1);
             }
+            else if((getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="boulder"){
+                if((getWorld()->getMapAt(getX(),getY()+1)).at(0)->pushed(up))//if can push up
+                    moveTo(getX(),getY()+1);
+            }
         }
         else if(ch== KEY_PRESS_DOWN) {
             setDirection(down);
@@ -46,9 +58,16 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="ammo"){
                 moveTo(getX(),getY()-1);
             }
+            else if((getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="boulder"){
+                if((getWorld()->getMapAt(getX(),getY()-1)).at(0)->pushed(down))//if can push down
+                    moveTo(getX(),getY()-1);
+            }
         }
         else if(ch== KEY_PRESS_SPACE) {
-            return getDirection();
+            if(getWorld()->getPlayer()->getAmmo()>0){
+                getWorld()->getPlayer()->decreaseAmmo();
+                return getDirection();
+            }
             //inform the StudentWorld that a bullet should be created and use this returned value to set the direction
         }
         else if(ch== KEY_PRESS_ESCAPE) {
@@ -89,6 +108,42 @@ int Bullet::doSomething(){
     }
     
     return 0;
+}
+
+bool Boulder::pushed(Direction dir){
+    if(dir==up){//if goes up
+        if((getWorld()->getMapAt(getX(),getY()+1)).size()==0||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="hole"){
+            moveTo(getX(),getY()+1);
+            return true;
+        }
+        else return false;
+    }
+    else if(dir==down){//if goes down
+        if((getWorld()->getMapAt(getX(),getY()-1)).size()==0 ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="hole"){
+            moveTo(getX(),getY()-1);
+            return true;
+        }
+        else return false;
+    }
+    else if(dir==left){//if goes left
+        if((getWorld()->getMapAt(getX()-1,getY())).size()==0 ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="hole"){
+            moveTo(getX()-1,getY());
+            return true;
+        }
+        else return false;
+    }
+    else if(dir==right){//if goes right
+        if((getWorld()->getMapAt(getX()+1,getY())).size()==0 ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="hole"){
+            moveTo(getX()+1,getY());
+            return true;
+        }
+        else return false;
+    }
+    return false;
 }
 
 int Boulder::doSomething(){
