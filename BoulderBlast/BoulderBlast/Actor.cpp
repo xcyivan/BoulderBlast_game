@@ -13,7 +13,8 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="jewel" ||
                (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="extra" ||
                (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="restore" ||
-               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="ammo"){
+               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="ammo" ||
+               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="exit"){
                 moveTo(getX()-1,getY());
             }
             else if((getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="boulder"){
@@ -27,7 +28,8 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="jewel" ||
                (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="extra" ||
                (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="restore" ||
-               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="ammo"){
+               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="ammo" ||
+               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="exit"){
                 moveTo(getX()+1,getY());
             }
             else if((getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="boulder"){
@@ -41,7 +43,8 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="jewel" ||
                (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="extra" ||
                (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="restore" ||
-               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="ammo"){
+               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="ammo" ||
+               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="exit"){
                 moveTo(getX(),getY()+1);
             }
             else if((getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="boulder"){
@@ -55,7 +58,8 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="jewel" ||
                (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="extra" ||
                (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="restore" ||
-               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="ammo"){
+               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="ammo" ||
+               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="exit"){
                 moveTo(getX(),getY()-1);
             }
             else if((getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="boulder"){
@@ -157,11 +161,7 @@ int Hole::doSomething(){
     for(int i=0; i<v.size();i++){
         if(v.at(i)->getName()=="boulder"){
             v.at(i)->setDeath();   //I don't know why this line doesn't work
-//            v.at(i)->damage();
-//            v.at(i)->damage();
-//            v.at(i)->damage();
-//            v.at(i)->damage();
-//            v.at(i)->damage();
+                                   //I know now~~!! pay special attention to the Boulder::isAlive() function which is a virtual one so the normal Actor::setDeath() should be considered in this Boulder::isAlive()
             setDeath();
             return -1;
         }
