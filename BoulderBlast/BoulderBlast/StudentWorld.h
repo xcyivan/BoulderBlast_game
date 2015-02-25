@@ -51,6 +51,8 @@ public:
     
     string getLevelDat(int i){return levelArray[i];}
     
+    void addActor(int x, int y, Actor::Direction dir, string name);
+    
 
 private:
     Player* pp;

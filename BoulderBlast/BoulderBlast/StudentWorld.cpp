@@ -187,6 +187,9 @@ vector<Actor*> StudentWorld::getMapAt(int x, int y){
     return ret;
 }
 
+void StudentWorld::addActor(int x, int y, Actor::Direction dir, string name){
+    if(name=="bullet") av.push_back(new Bullet(this, x, y, dir));
+}
 
 
 

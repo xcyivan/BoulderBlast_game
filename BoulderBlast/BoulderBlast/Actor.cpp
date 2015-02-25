@@ -14,7 +14,8 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="extra" ||
                (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="restore" ||
                (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="ammo" ||
-               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="exit"){
+               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="exit" ||
+               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="bullet"){
                 moveTo(getX()-1,getY());
             }
             else if((getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="boulder"){
@@ -29,7 +30,8 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="extra" ||
                (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="restore" ||
                (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="ammo" ||
-               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="exit"){
+               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="exit" ||
+               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="bullet"){
                 moveTo(getX()+1,getY());
             }
             else if((getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="boulder"){
@@ -44,7 +46,8 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="extra" ||
                (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="restore" ||
                (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="ammo" ||
-               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="exit"){
+               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="exit" ||
+               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="bullet"){
                 moveTo(getX(),getY()+1);
             }
             else if((getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="boulder"){
@@ -59,7 +62,8 @@ int Player::doSomething(){
                (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="extra" ||
                (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="restore" ||
                (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="ammo" ||
-               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="exit"){
+               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="exit" ||
+               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="bullet"){
                 moveTo(getX(),getY()-1);
             }
             else if((getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="boulder"){
@@ -91,11 +95,119 @@ bool Snarlbot::canMove(){
     if(ticksCount==0) return true;
     else return false;
 }
+
+bool Snarlbot::canFire(){
+    bool aline = false;
+    bool clear = true;
+    if(getDirection()==up){
+        aline = getWorld()->getPlayer()->getX()==getX() && getWorld()->getPlayer()->getY()>getY();
+        for(int y=getY()+1; y<getWorld()->getPlayer()->getY(); y++){
+            vector<Actor*> v=getWorld()->getMapAt(getX(), y);
+            for(int i=0; i<v.size(); i++)
+                if(v.at(i)->getName()=="wall"||v.at(i)->getName()=="boulder"||v.at(i)->getName()=="snarl"||v.at(i)->getName()=="klepto"||v.at(i)->getName()=="factory")
+                    clear=false;
+        }
+    }
+    else if(getDirection()==down){
+        aline = getWorld()->getPlayer()->getX()==getX() && getWorld()->getPlayer()->getY()<getY();
+        for(int y=getY()-1; y>getWorld()->getPlayer()->getY(); y--){
+            vector<Actor*> v=getWorld()->getMapAt(getX(), y);
+            for(int i=0; i<v.size(); i++)
+                if(v.at(i)->getName()=="wall"||v.at(i)->getName()=="boulder"||v.at(i)->getName()=="snarl"||v.at(i)->getName()=="klepto"||v.at(i)->getName()=="factory")
+                    clear=false;
+        }
+    }
+    else if(getDirection()==left){
+        aline = getWorld()->getPlayer()->getX()<getX() && getWorld()->getPlayer()->getY()==getY();
+        for(int x=getX()-1; x>getWorld()->getPlayer()->getX(); x--){
+            vector<Actor*> v=getWorld()->getMapAt(x, getY());
+            for(int i=0; i<v.size(); i++)
+                if(v.at(i)->getName()=="wall"||v.at(i)->getName()=="boulder"||v.at(i)->getName()=="snarl"||v.at(i)->getName()=="klepto"||v.at(i)->getName()=="factory")
+                    clear=false;
+        }
+    }
+    else if(getDirection()==right){
+        aline = getWorld()->getPlayer()->getX()>getX() && getWorld()->getPlayer()->getY()==getY();
+        for(int x=getX()+1; x<getWorld()->getPlayer()->getX(); x++){
+            vector<Actor*> v=getWorld()->getMapAt(x, getY());
+            for(int i=0; i<v.size(); i++)
+                if(v.at(i)->getName()=="wall"||v.at(i)->getName()=="boulder"||v.at(i)->getName()=="snarl"||v.at(i)->getName()=="klepto"||v.at(i)->getName()=="factory")
+                    clear=false;
+        }
+    }
+    bool res = aline && clear;
+    return res;
+}
+
 int Snarlbot::doSomething(){
-    if(!isAlive()) return -1;
+    if(!isAlive()) {getWorld()->increaseScore(100);return -1;}
     if(!canMove())return 0;
     
-    cout<<"haha! I'm moving!"<<endl;
+    //if can move
+    if(getDirection()==up){
+        if (canFire()){
+            getWorld()->addActor(getX(), getY()+1, up, "bullet");
+            return 0;
+        }
+        if((getWorld()->getMapAt(getX(),getY()+1)).size()==0 ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="jewel" ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="extra" ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="restore" ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="ammo" ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="exit" ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="bullet"){
+                moveTo(getX(),getY()+1);
+        }
+        else setDirection(down);
+    }
+    else if(getDirection()==down){
+        if(canFire()){
+            getWorld()->addActor(getX(), getY()-1, down, "bullet");
+            return 0;
+        }
+        if((getWorld()->getMapAt(getX(),getY()-1)).size()==0 ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="jewel" ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="extra" ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="restore" ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="ammo" ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="exit" ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="bullet"){
+                moveTo(getX(),getY()-1);
+        }
+        else setDirection(up);
+    }
+    else if(getDirection()==left){
+        if(canFire()){
+            getWorld()->addActor(getX()-1, getY(), left, "bullet");
+            return 0;
+        }
+        if((getWorld()->getMapAt(getX()-1,getY())).size()==0 ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="jewel" ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="extra" ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="restore" ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="ammo" ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="exit" ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="bullet"){
+                moveTo(getX()-1,getY());
+        }
+        else setDirection(right);
+    }
+    else if(getDirection()==right){
+        if(canFire()){
+            getWorld()->addActor(getX()+1, getY(), right, "bullet");
+            return 0;
+        }
+        if((getWorld()->getMapAt(getX()+1,getY())).size()==0 ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="jewel" ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="extra" ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="restore" ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="ammo" ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="exit" ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="bullet"){
+                moveTo(getX()+1,getY());
+        }
+        else setDirection(left);
+    }
     return 0;
 }
 
@@ -129,6 +241,20 @@ int Bullet::doSomething(){
     else if(getDirection()==right){//if goes right
         moveTo(getX()+1,getY());
     }
+    
+    //if after the move, the bullet is hitting something
+    if((getWorld()->getMapAt(getX(), getY())).size()!=0){
+        vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
+        for(int i=0; i<v.size(); i++){
+            if(v.at(i)->getName()=="wall") {setDeath(); return -1;}
+            else if (v.at(i)->getName()=="boulder" || v.at(i)->getName()=="snarlbot"){
+                v.at(i)->damage();
+                setDeath();
+                return -1;
+            }
+        }
+    }
+
     
     return 0;
 }

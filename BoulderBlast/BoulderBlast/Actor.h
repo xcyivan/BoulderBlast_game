@@ -92,6 +92,7 @@ public:
         return true;
     }
     
+    bool canFire();
 
 private:
     Direction m_vh;
