@@ -5,6 +5,7 @@
 #include "GameConstants.h"
 #include <iostream>
 #include "GameConstants.h"
+#include <cstdlib>
 using namespace std;
 
 class StudentWorld;
@@ -32,6 +33,8 @@ public:
     virtual void damage(){cout<<"Oh I'm damaged"<<endl;}
     
     virtual bool pushed(Direction dir){return false;}
+    
+    bool clearToMove();
 
 private:
     StudentWorld* m_sworld;
@@ -98,13 +101,58 @@ private:
     Direction m_vh;
     int ticksCount;
     int m_hitpoints;
+};
 
+////////////factory class////////////////////////
+class Factory : public Actor{
+public:
+    //type: 0 means kleptobot factory, 1 means angry kleptobot factory
+    Factory(StudentWorld* sw, int startX, int startY, int type)
+    :Actor(sw, IID_ROBOT_FACTORY, startX, startY, none, "factory"), m_type(type),ticksCount(0){}
+    virtual ~Factory(){cout<<"the factory is gone"<<endl;}
+    
+    bool canMove(){
+        ticksCount=(ticksCount+1)%100;
+        if(ticksCount==0) return true;
+        else return false;
+    }
+    virtual int doSomething();
+    
+private:
+    int m_type;
+    int ticksCount;
+};
 
+/////////////BaseKlepto class///////////////////
+class BaseKlepto : public Actor{
+public:
+    BaseKlepto(StudentWorld* sw, int startX, int startY, int imageID, Direction dir, string name)
+    :Actor(sw, imageID, startX, startY, dir, name), ticksCount(0),stepsCount(0){
+        m_step = rand()%6+1;
+        cout<<"m_step is "<<m_step<<endl;
+    }
+    ~BaseKlepto(){cout<<"the BaseKlepto is gone"<<endl;}
+    bool canMove();
+    
+    virtual int doSomething();
+    
+    void turn();
+    
+private:
+    int ticksCount;
+    int m_step;
+    int stepsCount;
+};
 
-
-
-
-
+/////////////Kleptobot class////////////////////
+class Kleptobot : public BaseKlepto{
+public:
+    Kleptobot(StudentWorld* sw, int startX, int startY)
+    :BaseKlepto(sw, startX, startY, IID_KLEPTOBOT, right, "klepto"),m_hitpoints(5){}
+    ~Kleptobot(){cout<<"the Kleptobot is gone"<<endl;}
+    
+private:
+    int m_hitpoints;
 };
 
 

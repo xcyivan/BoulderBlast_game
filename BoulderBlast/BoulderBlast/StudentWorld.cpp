@@ -27,55 +27,46 @@ int StudentWorld:: init(){
         for(int y=0; y<15;y++){
             Level:: MazeEntry item = lev.getContentsOf(x, y);
             
-            if(item==Level:: empty) map[x][y]=' ';
-            else if(item==Level::exit) {
-                map[x][y]='x';
+            if(item==Level::exit) {
                 av.push_back(new Exit(this,x,y));
             }
             else if(item==Level::player) {
-                map[x][y]='@';
                 pp = new Player(this, x, y);
             }
             else if(item==Level::horiz_snarlbot) {
                 av.push_back(new Snarlbot(this, x, y, Actor::right));
-                map[x][y]='h';
             }
             else if(item==Level::vert_snarlbot) {
                 av.push_back(new Snarlbot(this, x, y, Actor::down));
-                map[x][y]='v';
             }
-            else if(item==Level::kleptobot_factory) map[x][y]='1';
-            else if(item==Level::angry_kleptobot_factory) map[x][y]='2';
+            else if(item==Level::kleptobot_factory) {
+                av.push_back(new Factory(this, x, y, 0));
+            }
+            else if(item==Level::angry_kleptobot_factory) {
+                av.push_back(new Factory(this, x, y, 1));
+            }
             else if(item==Level::wall) {
-                map[x][y]='#';
                 av.push_back(new Wall(this, x,y));
             }
             else if(item==Level::boulder) {
-                map[x][y]='b';
                 av.push_back(new Boulder(this,x,y));
             }
             else if(item==Level::hole) {
-                map[x][y]='o';
                 av.push_back(new Hole(this,x,y));
             }
             else if(item==Level::jewel) {
-                map[x][y]='*';
                 av.push_back(new Jewel(this,x,y));
                 m_jewelCount++;
             }
             else if(item==Level::restore_health) {
-                map[x][y]='r';
                 av.push_back(new RestoreLifeGoodie(this,x,y));
             }
             else if(item==Level::extra_life) {
-                map[x][y]='e';
                 av.push_back(new ExtraLifeGoodie(this,x,y));
             }
             else if(item==Level::ammo) {
-                map[x][y]='a';
                 av.push_back(new AmmoGoodie(this,x,y));
             }
-            else map[x][y]='?';
         }
     }
     ////////////end of load level //////////////////////////
@@ -95,19 +86,15 @@ int StudentWorld:: move(){
     //if fire a bullet
     else if(ppstatus==Actor::up){
         av.push_back(new Bullet(this, pp->getX(), pp->getY()+1, Actor::up));
-        map[pp->getX()][pp->getY()+1]='.';
     }
     else if(ppstatus==Actor::down){
         av.push_back(new Bullet(this, pp->getX(), pp->getY()-1, Actor::down));
-        map[pp->getX()][pp->getY()-1]='.';
     }
     else if(ppstatus==Actor::left){
         av.push_back(new Bullet(this, pp->getX()-1, pp->getY(), Actor::left));
-        map[pp->getX()-1][pp->getY()]='.';
     }
     else if(ppstatus==Actor::right){
         av.push_back(new Bullet(this, pp->getX()+1, pp->getY(), Actor::right));
-        map[pp->getX()][pp->getY()]='.';
     }
 
     //ask other objects to do something and delete dead objects
@@ -189,6 +176,7 @@ vector<Actor*> StudentWorld::getMapAt(int x, int y){
 
 void StudentWorld::addActor(int x, int y, Actor::Direction dir, string name){
     if(name=="bullet") av.push_back(new Bullet(this, x, y, dir));
+    else if(name=="klepto") av.push_back(new Kleptobot(this, x, y));
 }
 
 

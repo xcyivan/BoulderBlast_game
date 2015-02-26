@@ -1,7 +1,53 @@
 #include "Actor.h"
 #include "StudentWorld.h"
 
-// Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
+bool Actor::clearToMove(){
+    Direction dir = getDirection();
+    if(dir==up){
+        if((getWorld()->getMapAt(getX(),getY()+1)).size()==0 ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="jewel" ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="extra" ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="restore" ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="ammo" ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="exit" ||
+           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="bullet")
+                return true;
+    }
+    else if(dir==down){
+        if((getWorld()->getMapAt(getX(),getY()-1)).size()==0 ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="jewel" ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="extra" ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="restore" ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="ammo" ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="exit" ||
+           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="bullet")
+                return true;
+    }
+    else if(dir==left){
+        if((getWorld()->getMapAt(getX()-1,getY())).size()==0 ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="jewel" ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="extra" ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="restore" ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="ammo" ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="exit" ||
+           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="bullet")
+                return true;
+    }
+    else if(dir==right){
+        if((getWorld()->getMapAt(getX()+1,getY())).size()==0 ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="jewel" ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="extra" ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="restore" ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="ammo" ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="exit" ||
+           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="bullet")
+                return true;
+    }
+    return false;
+}
+
+
+
 int Player::doSomething(){
     if(isAlive()==false) return -1;
     int ch;
@@ -9,15 +55,7 @@ int Player::doSomething(){
         // user hit a key this tick! switch (ch)
         if(ch== KEY_PRESS_LEFT) {
             setDirection(left);
-            if((getWorld()->getMapAt(getX()-1,getY())).size()==0 ||
-               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="jewel" ||
-               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="extra" ||
-               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="restore" ||
-               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="ammo" ||
-               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="exit" ||
-               (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="bullet"){
-                moveTo(getX()-1,getY());
-            }
+            if(clearToMove())   moveTo(getX()-1,getY());
             else if((getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="boulder"){
                 if((getWorld()->getMapAt(getX()-1,getY())).at(0)->pushed(left))//if can push left
                    moveTo(getX()-1,getY());
@@ -25,15 +63,7 @@ int Player::doSomething(){
         }
         else if(ch== KEY_PRESS_RIGHT) {
             setDirection(right);
-            if((getWorld()->getMapAt(getX()+1,getY())).size()==0 ||
-               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="jewel" ||
-               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="extra" ||
-               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="restore" ||
-               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="ammo" ||
-               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="exit" ||
-               (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="bullet"){
-                moveTo(getX()+1,getY());
-            }
+            if(clearToMove())   moveTo(getX()+1,getY());
             else if((getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="boulder"){
                 if((getWorld()->getMapAt(getX()+1,getY())).at(0)->pushed(right))//if can push right
                     moveTo(getX()+1,getY());
@@ -41,15 +71,7 @@ int Player::doSomething(){
         }
         else if(ch== KEY_PRESS_UP) {
             setDirection(up);
-            if((getWorld()->getMapAt(getX(),getY()+1)).size()==0 ||
-               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="jewel" ||
-               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="extra" ||
-               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="restore" ||
-               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="ammo" ||
-               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="exit" ||
-               (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="bullet"){
-                moveTo(getX(),getY()+1);
-            }
+            if(clearToMove())   moveTo(getX(),getY()+1);
             else if((getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="boulder"){
                 if((getWorld()->getMapAt(getX(),getY()+1)).at(0)->pushed(up))//if can push up
                     moveTo(getX(),getY()+1);
@@ -57,15 +79,7 @@ int Player::doSomething(){
         }
         else if(ch== KEY_PRESS_DOWN) {
             setDirection(down);
-            if((getWorld()->getMapAt(getX(),getY()-1)).size()==0 ||
-               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="jewel" ||
-               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="extra" ||
-               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="restore" ||
-               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="ammo" ||
-               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="exit" ||
-               (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="bullet"){
-                moveTo(getX(),getY()-1);
-            }
+            if(clearToMove())   moveTo(getX(),getY()-1);
             else if((getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="boulder"){
                 if((getWorld()->getMapAt(getX(),getY()-1)).at(0)->pushed(down))//if can push down
                     moveTo(getX(),getY()-1);
@@ -149,67 +163,100 @@ int Snarlbot::doSomething(){
             getWorld()->addActor(getX(), getY()+1, up, "bullet");
             return 0;
         }
-        if((getWorld()->getMapAt(getX(),getY()+1)).size()==0 ||
-           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="jewel" ||
-           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="extra" ||
-           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="restore" ||
-           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="ammo" ||
-           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="exit" ||
-           (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="bullet"){
-                moveTo(getX(),getY()+1);
-        }
-        else setDirection(down);
+        if(clearToMove())   moveTo(getX(),getY()+1);
+        else    setDirection(down);
     }
     else if(getDirection()==down){
         if(canFire()){
             getWorld()->addActor(getX(), getY()-1, down, "bullet");
             return 0;
         }
-        if((getWorld()->getMapAt(getX(),getY()-1)).size()==0 ||
-           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="jewel" ||
-           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="extra" ||
-           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="restore" ||
-           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="ammo" ||
-           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="exit" ||
-           (getWorld()->getMapAt(getX(),getY()-1)).at(0)->getName()=="bullet"){
-                moveTo(getX(),getY()-1);
-        }
-        else setDirection(up);
+        if(clearToMove())   moveTo(getX(),getY()-1);
+        else    setDirection(up);
     }
     else if(getDirection()==left){
         if(canFire()){
             getWorld()->addActor(getX()-1, getY(), left, "bullet");
             return 0;
         }
-        if((getWorld()->getMapAt(getX()-1,getY())).size()==0 ||
-           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="jewel" ||
-           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="extra" ||
-           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="restore" ||
-           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="ammo" ||
-           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="exit" ||
-           (getWorld()->getMapAt(getX()-1,getY())).at(0)->getName()=="bullet"){
-                moveTo(getX()-1,getY());
-        }
-        else setDirection(right);
+        if(clearToMove())   moveTo(getX()-1,getY());
+        else    setDirection(right);
     }
     else if(getDirection()==right){
         if(canFire()){
             getWorld()->addActor(getX()+1, getY(), right, "bullet");
             return 0;
         }
-        if((getWorld()->getMapAt(getX()+1,getY())).size()==0 ||
-           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="jewel" ||
-           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="extra" ||
-           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="restore" ||
-           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="ammo" ||
-           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="exit" ||
-           (getWorld()->getMapAt(getX()+1,getY())).at(0)->getName()=="bullet"){
-                moveTo(getX()+1,getY());
-        }
-        else setDirection(left);
+        if(clearToMove())   moveTo(getX()+1,getY());
+        else    setDirection(left);
     }
     return 0;
 }
+
+int Factory::doSomething(){
+    if(canMove()) {
+        getWorld()->addActor(getX(), getY(), right, "klepto");
+    }
+    return 0;
+}
+
+bool BaseKlepto::canMove(){
+    int level = getWorld()->getLevel();
+    int ticks = (28-level)/4;
+    if (ticks<3) ticks=3;
+    ticksCount = (ticksCount+1)%ticks;
+    if(ticksCount==0) return true;
+    else return false;
+}
+
+void BaseKlepto::turn(){
+    stepsCount=0;
+    m_step=rand()%6+1;
+    int randdir = rand()%4+1;
+    if(randdir==up) setDirection(up);
+    else if(randdir==down) setDirection(down);
+    else if(randdir==left) setDirection(left);
+    else if(randdir==right)setDirection(right);
+}
+
+int BaseKlepto::doSomething(){
+    if(!isAlive()) return -1;
+    if(!canMove()) return 0;
+    if(stepsCount<m_step){
+        if(getDirection()==up){
+            if(clearToMove()){
+                moveTo(getX(),getY()+1);
+                stepsCount++;
+            }
+            else turn();
+        }
+        else if(getDirection()==down){
+            if(clearToMove()){
+                moveTo(getX(),getY()-1);
+                stepsCount++;
+            }
+            else turn();
+        }
+        else if(getDirection()==left){
+            if(clearToMove()){
+                moveTo(getX()-1,getY());
+                stepsCount++;
+            }
+            else turn();
+        }
+        else if(getDirection()==right){
+            if(clearToMove()){
+                moveTo(getX()+1,getY());
+                stepsCount++;
+            }
+            else turn();
+        }
+    }
+    else turn();
+    
+    return 0;
+}
+
 
 int Wall::doSomething(){
     return 0;

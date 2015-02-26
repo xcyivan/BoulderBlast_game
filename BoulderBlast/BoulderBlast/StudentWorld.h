@@ -58,7 +58,6 @@ private:
     Player* pp;
     vector<Actor*> av;
     string levelArray[5];
-    char map[15][15];
     int m_bonus;
     int m_jewelCount;
     bool m_canExit;
