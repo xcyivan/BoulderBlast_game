@@ -269,7 +269,9 @@ int Bullet::doSomething(){
         vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
         for(int i=0; i<v.size(); i++){
             if(v.at(i)->getName()=="wall") {setDeath(); return -1;}
-            else if (v.at(i)->getName()=="boulder" || v.at(i)->getName()=="snarlbot"){
+            else if (v.at(i)->getName()=="boulder" ||
+                     v.at(i)->getName()=="snarlbot" ||
+                     v.at(i)->getName()=="klepto"){
                 v.at(i)->damage();
                 setDeath();
                 return -1;
@@ -294,7 +296,9 @@ int Bullet::doSomething(){
         vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
         for(int i=0; i<v.size(); i++){
             if(v.at(i)->getName()=="wall") {setDeath(); return -1;}
-            else if (v.at(i)->getName()=="boulder" || v.at(i)->getName()=="snarlbot"){
+            else if (v.at(i)->getName()=="boulder" ||
+                     v.at(i)->getName()=="snarlbot" ||
+                     v.at(i)->getName()=="klepto"){
                 v.at(i)->damage();
                 setDeath();
                 return -1;

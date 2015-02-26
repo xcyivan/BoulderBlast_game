@@ -88,7 +88,7 @@ public:
     
     virtual bool isAlive(){
         if(Actor::isAlive()==false) return false;
-        if(m_hitpoints==0){
+        if(m_hitpoints<=0){
             Actor::setDeath();
             return false;
         }
@@ -150,6 +150,16 @@ public:
     Kleptobot(StudentWorld* sw, int startX, int startY)
     :BaseKlepto(sw, startX, startY, IID_KLEPTOBOT, right, "klepto"),m_hitpoints(5){}
     ~Kleptobot(){cout<<"the Kleptobot is gone"<<endl;}
+    virtual void damage(){m_hitpoints -= 2;}
+    virtual bool isAlive(){
+        if(Actor::isAlive()==false) return false;
+        if(m_hitpoints<=0){
+            Actor::setDeath();
+            return false;
+        }
+        return true;
+    }
+
     
 private:
     int m_hitpoints;
