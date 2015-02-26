@@ -192,10 +192,47 @@ int Snarlbot::doSomething(){
     }
     return 0;
 }
+bool Factory::canProduce0(){
+    int count0=0;
+    for(int i=getX()-3; i<=getX()+3; i++){
+        for(int j=getY()-3; j<=getY()+3; j++){
+            vector<Actor*> v = getWorld()->getMapAt(i, j);
+            for(int k=0; k<v.size(); k++)
+                if(v.at(k)->getName()=="klepto")    count0++;
+        }
+    }
+    //if there is robot on the same square of the factory return false
+    vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
+    for(int k=0; k<v.size(); k++)
+        if(v.at(k)->getName()=="klepto") return false;
+    if(count0<3 && rand()%50==0) return true;
+    else return false;
+}
+
+bool Factory::canProduce1(){
+    int count1=0;
+    for(int i=getX()-3; i<=getX()+3; i++){
+        for(int j=getY()-3; j<=getY()+3; j++){
+            vector<Actor*> v = getWorld()->getMapAt(i, j);
+            for(int k=0; k<v.size(); k++)
+                if(v.at(k)->getName()=="angry")    count1++;
+        }
+    }
+    //if there is robot on the same square of the factory return false
+    vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
+    for(int k=0; k<v.size(); k++)
+        if(v.at(k)->getName()=="angry") return false;
+    //else if count<3 return true
+    if(count1<3 && rand()%50==0) return true;
+    else return false;
+}
 
 int Factory::doSomething(){
-    if(canMove()) {
+    if(m_type==0 && canProduce0()) {
         getWorld()->addActor(getX(), getY(), right, "klepto");
+    }
+    if(m_type==1 && canProduce1()) {
+        getWorld()->addActor(getX(), getY(), right, "angry");
     }
     return 0;
 }
@@ -219,24 +256,30 @@ void BaseKlepto::turn(){
     else if(randdir==right)setDirection(right);
 }
 
-void BaseKlepto::pickup(){
+bool BaseKlepto::pickup(){
     vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
+    int randnum = rand()%10;
     for(int i=0; i<v.size(); i++){
-        if(v.at(i)->getName()=="extra" && goodie =="none"){
+        if(v.at(i)->getName()=="extra" && goodie =="none" && randnum==0){
             goodie="extra";
             v.at(i)->robotPicked();
+            return true;
         }
-        else if(v.at(i)->getName()=="restore" && goodie =="none"){
+        else if(v.at(i)->getName()=="restore" && goodie =="none" && randnum==0){
             goodie="restore";
             v.at(i)->robotPicked();
+            return true;
         }
-        else if(v.at(i)->getName()=="ammo" && goodie =="none"){
+        else if(v.at(i)->getName()=="ammo" && goodie =="none" && randnum==0){
             goodie="ammo";
             v.at(i)->robotPicked();
+            return true;
         }
     }
+    return false;
 
 }
+
 
 int BaseKlepto::doSomething(){
     if(!isAlive()) {
@@ -247,7 +290,7 @@ int BaseKlepto::doSomething(){
     }
     if(!canMove()) return 0;
     //if can pick up any goodie
-    pickup();
+    if(pickup()) return 0;
     if(stepsCount<m_step){
         if(getDirection()==up){
             if(clearToMove()){
@@ -284,6 +327,102 @@ int BaseKlepto::doSomething(){
 }
 
 
+bool AngryKleptobot::fire(){
+    bool aline = false;
+    bool clear = true;
+    if(getDirection()==up){
+        aline = getWorld()->getPlayer()->getX()==getX() && getWorld()->getPlayer()->getY()>getY();
+        for(int y=getY()+1; y<getWorld()->getPlayer()->getY(); y++){
+            vector<Actor*> v=getWorld()->getMapAt(getX(), y);
+            for(int i=0; i<v.size(); i++)
+                if(v.at(i)->getName()=="wall"||v.at(i)->getName()=="boulder"||v.at(i)->getName()=="snarl"||v.at(i)->getName()=="klepto"||v.at(i)->getName()=="factory")
+                    clear=false;
+        }
+    }
+    else if(getDirection()==down){
+        aline = getWorld()->getPlayer()->getX()==getX() && getWorld()->getPlayer()->getY()<getY();
+        for(int y=getY()-1; y>getWorld()->getPlayer()->getY(); y--){
+            vector<Actor*> v=getWorld()->getMapAt(getX(), y);
+            for(int i=0; i<v.size(); i++)
+                if(v.at(i)->getName()=="wall"||v.at(i)->getName()=="boulder"||v.at(i)->getName()=="snarl"||v.at(i)->getName()=="klepto"||v.at(i)->getName()=="factory")
+                    clear=false;
+        }
+    }
+    else if(getDirection()==left){
+        aline = getWorld()->getPlayer()->getX()<getX() && getWorld()->getPlayer()->getY()==getY();
+        for(int x=getX()-1; x>getWorld()->getPlayer()->getX(); x--){
+            vector<Actor*> v=getWorld()->getMapAt(x, getY());
+            for(int i=0; i<v.size(); i++)
+                if(v.at(i)->getName()=="wall"||v.at(i)->getName()=="boulder"||v.at(i)->getName()=="snarl"||v.at(i)->getName()=="klepto"||v.at(i)->getName()=="factory")
+                    clear=false;
+        }
+    }
+    else if(getDirection()==right){
+        aline = getWorld()->getPlayer()->getX()>getX() && getWorld()->getPlayer()->getY()==getY();
+        for(int x=getX()+1; x<getWorld()->getPlayer()->getX(); x++){
+            vector<Actor*> v=getWorld()->getMapAt(x, getY());
+            for(int i=0; i<v.size(); i++)
+                if(v.at(i)->getName()=="wall"||v.at(i)->getName()=="boulder"||v.at(i)->getName()=="snarl"||v.at(i)->getName()=="klepto"||v.at(i)->getName()=="factory")
+                    clear=false;
+        }
+    }
+    bool res = aline && clear;
+    if(res){
+        if(getDirection()==up)  getWorld()->addActor(getX(), getY()+1, up, "bullet");
+        else if(getDirection()==down)   getWorld()->addActor(getX(), getY()-1, down, "bullet");
+        else if(getDirection()==left)   getWorld()->addActor(getX()-1, getY(), left, "bullet");
+        else if(getDirection()==right)  getWorld()->addActor(getX()+1, getY(), right, "bullet");
+    }
+    return res;
+}
+
+int AngryKleptobot::doSomething(){
+    if(!isAlive()) {
+        getWorld()->increaseScore(10);
+        if(getGoodie()!="none")
+            getWorld()->addActor(getX(), getY(), none, getGoodie());
+        return -1;
+    }
+    if(!canMove()) return 0;
+    //if can pick up any goodie
+    if(pickup()) return 0;
+    if(fire()) return 0;
+    if(getstepsCount()<getm_step()){
+        if(getDirection()==up){
+            if(clearToMove()){
+                moveTo(getX(),getY()+1);
+                increasestepsCount();
+            }
+            else turn();
+        }
+        else if(getDirection()==down){
+            if(clearToMove()){
+                moveTo(getX(),getY()-1);
+                increasestepsCount();
+            }
+            else turn();
+        }
+        else if(getDirection()==left){
+            if(clearToMove()){
+                moveTo(getX()-1,getY());
+                increasestepsCount();
+            }
+            else turn();
+        }
+        else if(getDirection()==right){
+            if(clearToMove()){
+                moveTo(getX()+1,getY());
+                increasestepsCount();
+            }
+            else turn();
+        }
+    }
+    else turn();
+    
+    return 0;
+
+}
+
 int Wall::doSomething(){
     return 0;
 }
@@ -297,7 +436,8 @@ int Bullet::doSomething(){
             if(v.at(i)->getName()=="wall") {setDeath(); return -1;}
             else if (v.at(i)->getName()=="boulder" ||
                      v.at(i)->getName()=="snarlbot" ||
-                     v.at(i)->getName()=="klepto"){
+                     v.at(i)->getName()=="klepto" ||
+                     v.at(i)->getName()=="angry"){
                 v.at(i)->damage();
                 setDeath();
                 return -1;
@@ -324,7 +464,8 @@ int Bullet::doSomething(){
             if(v.at(i)->getName()=="wall") {setDeath(); return -1;}
             else if (v.at(i)->getName()=="boulder" ||
                      v.at(i)->getName()=="snarlbot" ||
-                     v.at(i)->getName()=="klepto"){
+                     v.at(i)->getName()=="klepto" ||
+                     v.at(i)->getName()=="angry"){
                 v.at(i)->damage();
                 setDeath();
                 return -1;

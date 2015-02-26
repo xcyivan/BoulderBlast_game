@@ -110,14 +110,13 @@ class Factory : public Actor{
 public:
     //type: 0 means kleptobot factory, 1 means angry kleptobot factory
     Factory(StudentWorld* sw, int startX, int startY, int type)
-    :Actor(sw, IID_ROBOT_FACTORY, startX, startY, none, "factory"), m_type(type),ticksCount(0){}
+    :Actor(sw, IID_ROBOT_FACTORY, startX, startY, none, "factory"), m_type(type),ticksCount(0){
+        cout<<"the factory type is "<<m_type<<endl;
+    }
     virtual ~Factory(){cout<<"the factory is gone"<<endl;}
     
-    bool canMove(){
-        ticksCount=(ticksCount+1)%100;
-        if(ticksCount==0) return true;
-        else return false;
-    }
+    bool canProduce0();
+    bool canProduce1();
     virtual int doSomething();
     
 private:
@@ -131,7 +130,6 @@ public:
     BaseKlepto(StudentWorld* sw, int startX, int startY, int imageID, Direction dir, string name)
     :Actor(sw, imageID, startX, startY, dir, name), ticksCount(0),stepsCount(0),goodie("none"){
         m_step = rand()%6+1;
-        cout<<"m_step is "<<m_step<<endl;
     }
     ~BaseKlepto(){cout<<"the BaseKlepto is gone"<<endl;}
     bool canMove();
@@ -139,7 +137,11 @@ public:
     virtual int doSomething();
     
     void turn();
-    void pickup();
+    bool pickup();
+    string getGoodie(){return goodie;}
+    int getstepsCount(){return stepsCount;}
+    int getm_step(){return m_step;}
+    void increasestepsCount(){stepsCount++;}
     
 private:
     int ticksCount;
@@ -164,9 +166,30 @@ public:
         return true;
     }
 
-    
 private:
     int m_hitpoints;
+};
+
+/////////////AngryKleptobot class///////////////////
+class AngryKleptobot : public BaseKlepto{
+public:
+    AngryKleptobot(StudentWorld* sw, int startX, int startY)
+    :BaseKlepto(sw, startX, startY, IID_ANGRY_KLEPTOBOT, right, "angry"), m_hitpoints(8){}
+    ~AngryKleptobot(){cout<<"the AngryKleptobot is gone"<<endl;}
+    virtual void damage(){m_hitpoints-=2;}
+    virtual bool isAlive(){
+        if(Actor::isAlive()==false) return false;
+        if(m_hitpoints<=0){
+            Actor::setDeath();
+            return false;
+        }
+        return true;
+    }
+    bool fire();
+    virtual int doSomething();
+private:
+    int m_hitpoints;
+
 };
 
 

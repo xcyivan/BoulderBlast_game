@@ -180,6 +180,7 @@ void StudentWorld::addActor(int x, int y, Actor::Direction dir, string name){
     else if(name=="extra") av.push_back(new ExtraLifeGoodie(this, x, y));
     else if(name=="restore") av.push_back(new RestoreLifeGoodie(this, x, y));
     else if(name=="ammo") av.push_back(new AmmoGoodie(this, x, y));
+    else if(name=="angry") av.push_back(new AngryKleptobot(this, x, y));
 }
 
 
