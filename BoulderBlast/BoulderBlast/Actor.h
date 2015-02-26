@@ -35,6 +35,8 @@ public:
     virtual bool pushed(Direction dir){return false;}
     
     bool clearToMove();
+    
+    virtual void robotPicked(){;}
 
 private:
     StudentWorld* m_sworld;
@@ -127,7 +129,7 @@ private:
 class BaseKlepto : public Actor{
 public:
     BaseKlepto(StudentWorld* sw, int startX, int startY, int imageID, Direction dir, string name)
-    :Actor(sw, imageID, startX, startY, dir, name), ticksCount(0),stepsCount(0){
+    :Actor(sw, imageID, startX, startY, dir, name), ticksCount(0),stepsCount(0),goodie("none"){
         m_step = rand()%6+1;
         cout<<"m_step is "<<m_step<<endl;
     }
@@ -137,11 +139,13 @@ public:
     virtual int doSomething();
     
     void turn();
+    void pickup();
     
 private:
     int ticksCount;
     int m_step;
     int stepsCount;
+    string goodie;
 };
 
 /////////////Kleptobot class////////////////////
@@ -229,9 +233,17 @@ public:
 class Goodie: public Actor{
 public:
     Goodie(StudentWorld* sw, int imageID, int startX, int startY, Direction dir=none, string name="goodie")
-    :Actor(sw, imageID, startX, startY, dir, name){}
+    :Actor(sw, imageID, startX, startY, dir, name), m_robotPicked(false){}
 
     virtual int doSomething();
+    
+    void robotPicked(){m_robotPicked=true;}
+    
+    bool didRobotPicked(){return m_robotPicked;}
+    
+
+private:
+    bool m_robotPicked;
 
 };
 

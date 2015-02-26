@@ -177,6 +177,9 @@ vector<Actor*> StudentWorld::getMapAt(int x, int y){
 void StudentWorld::addActor(int x, int y, Actor::Direction dir, string name){
     if(name=="bullet") av.push_back(new Bullet(this, x, y, dir));
     else if(name=="klepto") av.push_back(new Kleptobot(this, x, y));
+    else if(name=="extra") av.push_back(new ExtraLifeGoodie(this, x, y));
+    else if(name=="restore") av.push_back(new RestoreLifeGoodie(this, x, y));
+    else if(name=="ammo") av.push_back(new AmmoGoodie(this, x, y));
 }
 
 

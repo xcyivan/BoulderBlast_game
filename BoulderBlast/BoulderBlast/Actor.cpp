@@ -219,9 +219,35 @@ void BaseKlepto::turn(){
     else if(randdir==right)setDirection(right);
 }
 
+void BaseKlepto::pickup(){
+    vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
+    for(int i=0; i<v.size(); i++){
+        if(v.at(i)->getName()=="extra" && goodie =="none"){
+            goodie="extra";
+            v.at(i)->robotPicked();
+        }
+        else if(v.at(i)->getName()=="restore" && goodie =="none"){
+            goodie="restore";
+            v.at(i)->robotPicked();
+        }
+        else if(v.at(i)->getName()=="ammo" && goodie =="none"){
+            goodie="ammo";
+            v.at(i)->robotPicked();
+        }
+    }
+
+}
+
 int BaseKlepto::doSomething(){
-    if(!isAlive()) return -1;
+    if(!isAlive()) {
+        getWorld()->increaseScore(10);
+        if(goodie!="none")
+            getWorld()->addActor(getX(), getY(), none, goodie);
+        return -1;
+    }
     if(!canMove()) return 0;
+    //if can pick up any goodie
+    pickup();
     if(stepsCount<m_step){
         if(getDirection()==up){
             if(clearToMove()){
@@ -392,6 +418,7 @@ int Jewel::doSomething(){
 }
 
 int ExtraLifeGoodie::doSomething(){
+    if(didRobotPicked()) return -1;
     if(Goodie::doSomething()==-1){
         getWorld()->increaseScore(1000);
         getWorld()->incLives();
@@ -401,6 +428,7 @@ int ExtraLifeGoodie::doSomething(){
 }
 
 int RestoreLifeGoodie::doSomething(){
+    if (didRobotPicked()) return -1;
     if(Goodie::doSomething()==-1){
         getWorld()->increaseScore(500);
         getWorld()->getPlayer()->restoreHealth();
@@ -410,6 +438,7 @@ int RestoreLifeGoodie::doSomething(){
 }
 
 int AmmoGoodie:: doSomething(){
+    if(didRobotPicked()) return -1;
     if(Goodie::doSomething()==-1){
         getWorld()->increaseScore(100);
         getWorld()->getPlayer()->increaseAmmo(20);
