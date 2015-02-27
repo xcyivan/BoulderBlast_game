@@ -65,8 +65,16 @@ public:
     void restoreHealth(){m_hitpoints=20;cout<<"now the player's hitpoints is "<<m_hitpoints<<endl;}
     int getHealth() const{return m_hitpoints;}
     
-    virtual void damage(){cout<<"Oh I'm damaged"<<endl;}
+    virtual void damage(){m_hitpoints-=2;}
     
+    virtual bool isAlive(){
+        if(Actor::isAlive()==false) return false;
+        if(m_hitpoints<=0){
+            Actor::setDeath();
+            return false;
+        }
+        return true;
+    }
     
         
 private:

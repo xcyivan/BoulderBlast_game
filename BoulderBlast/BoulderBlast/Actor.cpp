@@ -88,6 +88,7 @@ int Player::doSomething(){
         else if(ch== KEY_PRESS_SPACE) {
             if(getWorld()->getPlayer()->getAmmo()>0){
                 getWorld()->getPlayer()->decreaseAmmo();
+                getWorld()->playSound(SOUND_PLAYER_FIRE);
                 return getDirection();
             }
             //inform the StudentWorld that a bullet should be created and use this returned value to set the direction
@@ -161,6 +162,7 @@ int Snarlbot::doSomething(){
     if(getDirection()==up){
         if (canFire()){
             getWorld()->addActor(getX(), getY()+1, up, "bullet");
+            getWorld()->playSound(SOUND_ENEMY_FIRE );
             return 0;
         }
         if(clearToMove())   moveTo(getX(),getY()+1);
@@ -169,6 +171,7 @@ int Snarlbot::doSomething(){
     else if(getDirection()==down){
         if(canFire()){
             getWorld()->addActor(getX(), getY()-1, down, "bullet");
+            getWorld()->playSound(SOUND_ENEMY_FIRE );
             return 0;
         }
         if(clearToMove())   moveTo(getX(),getY()-1);
@@ -177,6 +180,7 @@ int Snarlbot::doSomething(){
     else if(getDirection()==left){
         if(canFire()){
             getWorld()->addActor(getX()-1, getY(), left, "bullet");
+            getWorld()->playSound(SOUND_ENEMY_FIRE );
             return 0;
         }
         if(clearToMove())   moveTo(getX()-1,getY());
@@ -185,6 +189,7 @@ int Snarlbot::doSomething(){
     else if(getDirection()==right){
         if(canFire()){
             getWorld()->addActor(getX()+1, getY(), right, "bullet");
+            getWorld()->playSound(SOUND_ENEMY_FIRE );
             return 0;
         }
         if(clearToMove())   moveTo(getX()+1,getY());
@@ -229,9 +234,11 @@ bool Factory::canProduce1(){
 
 int Factory::doSomething(){
     if(m_type==0 && canProduce0()) {
+        getWorld()->playSound(SOUND_ROBOT_BORN);
         getWorld()->addActor(getX(), getY(), right, "klepto");
     }
     if(m_type==1 && canProduce1()) {
+        getWorld()->playSound(SOUND_ROBOT_BORN);
         getWorld()->addActor(getX(), getY(), right, "angry");
     }
     return 0;
@@ -263,16 +270,19 @@ bool BaseKlepto::pickup(){
         if(v.at(i)->getName()=="extra" && goodie =="none" && randnum==0){
             goodie="extra";
             v.at(i)->robotPicked();
+            getWorld()->playSound(SOUND_ROBOT_MUNCH);
             return true;
         }
         else if(v.at(i)->getName()=="restore" && goodie =="none" && randnum==0){
             goodie="restore";
             v.at(i)->robotPicked();
+            getWorld()->playSound(SOUND_ROBOT_MUNCH);
             return true;
         }
         else if(v.at(i)->getName()=="ammo" && goodie =="none" && randnum==0){
             goodie="ammo";
             v.at(i)->robotPicked();
+            getWorld()->playSound(SOUND_ROBOT_MUNCH);
             return true;
         }
     }
@@ -368,6 +378,7 @@ bool AngryKleptobot::fire(){
     }
     bool res = aline && clear;
     if(res){
+        getWorld()->playSound(SOUND_ENEMY_FIRE );
         if(getDirection()==up)  getWorld()->addActor(getX(), getY()+1, up, "bullet");
         else if(getDirection()==down)   getWorld()->addActor(getX(), getY()-1, down, "bullet");
         else if(getDirection()==left)   getWorld()->addActor(getX()-1, getY(), left, "bullet");
@@ -434,16 +445,31 @@ int Bullet::doSomething(){
         vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
         for(int i=0; i<v.size(); i++){
             if(v.at(i)->getName()=="wall") {setDeath(); return -1;}
-            else if (v.at(i)->getName()=="boulder" ||
-                     v.at(i)->getName()=="snarlbot" ||
+            else if (v.at(i)->getName()=="snarlbot" ||
                      v.at(i)->getName()=="klepto" ||
                      v.at(i)->getName()=="angry"){
+                v.at(i)->damage();
+                setDeath();
+                if(v.at(i)->isAlive()) getWorld()->playSound(SOUND_ROBOT_IMPACT);
+                else getWorld()->playSound(SOUND_ROBOT_DIE);
+                return -1;
+            }
+            else if(v.at(i)->getName()=="boulder"){
                 v.at(i)->damage();
                 setDeath();
                 return -1;
             }
         }
     }
+    //if the bullet is hitting the player
+    if(getWorld()->getPlayer()->getX()==getX() && getWorld()->getPlayer()->getY()==getY()){
+        getWorld()->getPlayer()->damage();
+        if(getWorld()->getPlayer()->isAlive()) getWorld()->playSound(SOUND_PLAYER_IMPACT);
+        else getWorld()->playSound(SOUND_PLAYER_DIE);
+        setDeath();
+        return -1;
+    }
+    // move
     if(getDirection()==up){//if goes up
         moveTo(getX(),getY()+1);
     }
@@ -462,15 +488,30 @@ int Bullet::doSomething(){
         vector<Actor*> v = getWorld()->getMapAt(getX(), getY());
         for(int i=0; i<v.size(); i++){
             if(v.at(i)->getName()=="wall") {setDeath(); return -1;}
-            else if (v.at(i)->getName()=="boulder" ||
-                     v.at(i)->getName()=="snarlbot" ||
+            else if (v.at(i)->getName()=="snarlbot" ||
                      v.at(i)->getName()=="klepto" ||
                      v.at(i)->getName()=="angry"){
+                v.at(i)->damage();
+                if(v.at(i)->isAlive()) getWorld()->playSound(SOUND_ROBOT_IMPACT);
+                else getWorld()->playSound(SOUND_ROBOT_DIE);
+                setDeath();
+                return -1;
+            }
+            else if(v.at(i)->getName()=="boulder"){
                 v.at(i)->damage();
                 setDeath();
                 return -1;
             }
+            
         }
+    }
+    //if the bullet is hitting the player
+    if(getWorld()->getPlayer()->getX()==getX() && getWorld()->getPlayer()->getY()==getY()){
+        getWorld()->getPlayer()->damage();
+        if(getWorld()->getPlayer()->isAlive()) getWorld()->playSound(SOUND_PLAYER_IMPACT);
+        else getWorld()->playSound(SOUND_PLAYER_DIE);
+        setDeath();
+        return -1;
     }
 
     
@@ -542,7 +583,7 @@ int Goodie::doSomething(){
 
 int Exit::doSomething(){
     if(getWorld()->canExit() && Goodie::doSomething()==-1){
-        cout<<"CONGRATULATIONS! YOU FIND THE EXIT!!"<<endl;
+        getWorld()->playSound(SOUND_FINISHED_LEVEL);
         getWorld()->incLives();
         return -2;
     }
@@ -563,6 +604,7 @@ int ExtraLifeGoodie::doSomething(){
     if(Goodie::doSomething()==-1){
         getWorld()->increaseScore(1000);
         getWorld()->incLives();
+        getWorld()->playSound(SOUND_GOT_GOODIE);
         return -1;
     }
     return 0;
@@ -573,6 +615,7 @@ int RestoreLifeGoodie::doSomething(){
     if(Goodie::doSomething()==-1){
         getWorld()->increaseScore(500);
         getWorld()->getPlayer()->restoreHealth();
+        getWorld()->playSound(SOUND_GOT_GOODIE);
         return -1;
     }
     return 0;
@@ -583,6 +626,7 @@ int AmmoGoodie:: doSomething(){
     if(Goodie::doSomething()==-1){
         getWorld()->increaseScore(100);
         getWorld()->getPlayer()->increaseAmmo(20);
+        getWorld()->playSound(SOUND_GOT_GOODIE);
         return  -1;
     }
     return 0;

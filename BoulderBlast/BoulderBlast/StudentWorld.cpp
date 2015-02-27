@@ -116,6 +116,8 @@ int StudentWorld:: move(){
     //expose exit if possible
     if(m_jewelCount==0) {
         m_canExit=true;
+        playSound(SOUND_REVEAL_EXIT);
+        m_jewelCount--;
         vector<Actor*> :: iterator ap = av.begin();
         while(ap!=av.end()){
             if((*ap)->getName()=="exit") (*ap)->setVisible(true);
