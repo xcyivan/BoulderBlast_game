@@ -235,10 +235,12 @@ bool Factory::canProduce1(){
 int Factory::doSomething(){
     if(m_type==0 && canProduce0()) {
         getWorld()->playSound(SOUND_ROBOT_BORN);
+        cout<<"Factory:: bear a klepto"<<endl;
         getWorld()->addActor(getX(), getY(), right, "klepto");
     }
     if(m_type==1 && canProduce1()) {
         getWorld()->playSound(SOUND_ROBOT_BORN);
+        cout<<"Factory:: bear an angry klepto"<<endl;
         getWorld()->addActor(getX(), getY(), right, "angry");
     }
     return 0;

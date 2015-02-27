@@ -19,7 +19,7 @@ class StudentWorld : public GameWorld
 public:
 	StudentWorld(std::string assetDir)
 	 : GameWorld(assetDir), m_bonus(1000), m_jewelCount(0),m_canExit(false){
-         levelArray[0]="level00.dat";
+         levelArray[0]="level01.dat";
          levelArray[1]="level01.dat";
          levelArray[2]="level02.dat";
          levelArray[3]="level03.dat";

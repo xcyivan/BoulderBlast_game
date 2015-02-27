@@ -101,15 +101,23 @@ int StudentWorld:: move(){
 
     //ask other objects to do something and delete dead objects
     vector<Actor*> :: iterator ap = av.begin();
+    int i=0;
     while(ap!=av.end()){
+        if((*ap)==nullptr){
+            cout<<"oh! I'm nullptr?!!! at av. " << i <<endl;
+            break;
+        }
+        if((*ap)->getName()=="klepto") {cout<<"I'm the       klepto at av"<<i <<endl;}
+        if((*ap)->getName()=="angry")  {cout<<"I'm the angry klepto at av"<<i <<endl;}
         int result =(*ap)->doSomething();
         if(result==-1) {
             (*ap)->setVisible(false);
             delete *ap;
             ap = av.erase(ap);
+            i--;
         }
         else if(result==-2) return GWSTATUS_FINISHED_LEVEL;
-        else ap++;
+        else {ap++;i++;}
     }
     
     //decrease the bonus
@@ -185,6 +193,8 @@ void StudentWorld::addActor(int x, int y, Actor::Direction dir, string name){
     else if(name=="restore") av.push_back(new RestoreLifeGoodie(this, x, y));
     else if(name=="ammo") av.push_back(new AmmoGoodie(this, x, y));
     else if(name=="angry") av.push_back(new AngryKleptobot(this, x, y));
+    
+    cout<<"new Actor added, av.size= :"<<av.size()<<endl;
 }
 
 
