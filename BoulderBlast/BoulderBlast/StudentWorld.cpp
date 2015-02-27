@@ -19,8 +19,10 @@ int StudentWorld:: init(){
     string curLevel = getLevelDat(getLevel());
     Level lev(assetDirectory());
     Level::LoadResult result = lev.loadLevel(curLevel);
-    if (result == Level::load_fail_file_not_found || result == Level:: load_fail_bad_format)
+    if (result == Level:: load_fail_bad_format)
         return GWSTATUS_LEVEL_ERROR;
+    if (result ==Level::load_fail_file_not_found || getLevel()==99)
+        return GWSTATUS_PLAYER_WON;
     //already loaded successfully
     //copy the map down
     for(int x=0; x<15; x++){

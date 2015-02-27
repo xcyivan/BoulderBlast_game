@@ -1,8 +1,8 @@
 #include "Actor.h"
 #include "StudentWorld.h"
 
-bool Actor::clearToMove(){
-    Direction dir = getDirection();
+bool Actor::clearToMove(Direction considerDir){
+    Direction dir = considerDir==none? getDirection(): considerDir;
     if(dir==up){
         if((getWorld()->getMapAt(getX(),getY()+1)).size()==0 ||
            (getWorld()->getMapAt(getX(),getY()+1)).at(0)->getName()=="jewel" ||
@@ -257,10 +257,25 @@ void BaseKlepto::turn(){
     stepsCount=0;
     m_step=rand()%6+1;
     int randdir = rand()%4+1;
-    if(randdir==up) setDirection(up);
-    else if(randdir==down) setDirection(down);
-    else if(randdir==left) setDirection(left);
-    else if(randdir==right)setDirection(right);
+    if     (randdir==up && clearToMove(up)) setDirection(up);
+    else if(randdir==up && clearToMove(down))setDirection(down);
+    else if(randdir==up && clearToMove(left))setDirection(left);
+    else if(randdir==up && clearToMove(right))setDirection(right);
+    
+    else if(randdir==down && clearToMove(down)) setDirection(down);
+    else if(randdir==down && clearToMove(left)) setDirection(left);
+    else if(randdir==down && clearToMove(right)) setDirection(right);
+    else if(randdir==down && clearToMove(up)) setDirection(up);
+    
+    else if(randdir==left && clearToMove(left)) setDirection(left);
+    else if(randdir==left && clearToMove(right)) setDirection(right);
+    else if(randdir==left && clearToMove(up)) setDirection(up);
+    else if(randdir==left && clearToMove(down)) setDirection(down);
+    
+    else if(randdir==right && clearToMove(right))setDirection(right);
+    else if(randdir==right && clearToMove(up)) setDirection(up);
+    else if(randdir==right && clearToMove(down)) setDirection(down);
+    else if(randdir==right && clearToMove(left)) setDirection(left);
 }
 
 bool BaseKlepto::pickup(){

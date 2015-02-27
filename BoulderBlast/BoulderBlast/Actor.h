@@ -34,7 +34,7 @@ public:
     
     virtual bool pushed(Direction dir){return false;}
     
-    bool clearToMove();
+    bool clearToMove(Direction considerDir=none);
     
     virtual void robotPicked(){;}
 
